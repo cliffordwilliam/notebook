@@ -1,21 +1,21 @@
 # Express app (cognitive reducer)
 
-Setup `npm`
+`npm`
 
 ```
 npm init -y
-npm i express pg sequelize jsonwebtoken dotenv bcrypt multer imagekit
+npm i express pg sequelize jsonwebtoken dotenv bcrypt multer imagekit jest supertest
 npm i -D nodemon sequelize-cli
 ```
 
-create `.gitignore` file
+`.gitignore`
 
 ```
 node_modules
 .env
 ```
 
-create `.env`
+`.env`
 
 ```env
 SECRET_KEY=
@@ -25,27 +25,27 @@ IMAGEKIT_PRIVATE_KEY=
 IMAGEKIT_URL_ENDPOINT=
 ```
 
-Setup `sequelize`
+`sequelize`
 
 ```
 npx sequelize init
 ```
 
-Edit `config.json` file
+`config.json`
 
 ```
 {
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "rentRoom",
+    "database": "name",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "postgres",
-    "database": "rentRoomTest",
+    "database": "nameTest",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
@@ -61,284 +61,10 @@ Edit `config.json` file
 npx sequelize db:create
 ```
 
-Tables:
-
-1. `User`
-2. `Lodging` - Main
-3. `Type` - Support
-
-Association:
-
-`User` -< `Lodging` >- `Type`
-
-## User Table
-
-- username : string
-- email : string (required, `unique`, `isEmail`)
-- password : string (required, `length min 5`)
-- role : string (`default`: Staff)
-- phoneNumber : string
-- address : string
-
-`Create model`
+`Create TEST database`
 
 ```
-npx sequelize model:create --name User --attributes username:string,email:string,password:string,role:string,phoneNumber:string,address:string
-```
-
-Edit `migration`:
-- `constraints`
-- `validation`
-- `fk`
-
-```js
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false, // required
-        unique: true, // unique
-        validate: {isEmail:true} // isEmail
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false, // required
-        validate: {len:[5,Infinity]} // len min 5
-      },
-```
-
-Edit `model`:
-- `constraints`
-- `validation`
-
-```js
-    email: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      unique:true, // unique
-      validate:{
-        isEmail:{msg:"wrong email format"}, //isEmail
-        notNull:{msg:"email required"}, // required custom err msg
-        notEmpty:{msg:"email required"} // required custom err msg
-      }
-    },
-    password: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      validate:{
-        len:{args:[5,Infinity],msg:"password min 5"}, // length min 5
-        notNull:{msg:"password required"}, // required custom err msg
-        notEmpty:{msg:"password required"} // required custom err msg
-      }
-    },
-    role: {
-      type:DataTypes.STRING,
-      defaultValue:"Staff" // default Staff
-    },
-```
-
-Add `association` to model
-
-```js
-    static associate(models) {
-      User.hasMany(models.Lodging)
-    }
-```
-
-## Lodging Table
-
-- name : string (required)
-- facility : text (required)
-- roomCapacity : integer (required)
-- imgUrl : string (required, `isUrl`)
-- location : string (required)
-- price : integer (required, `min 100`)
-- TypeId : integer (required)
-- UserId : integer (required)
-
-`Create Model`
-
-```
-npx sequelize model:create --name Lodging --attributes name:string,facility:text,roomCapacity:integer,imgUrl:string,location:string,price:integer,TypeId:integer,UserId:integer
-```
-
-Edit `migration`:
-- `constraints`
-- `validation`
-- `fk`
-
-```js
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false, // required
-      },
-      facility: {
-        type: Sequelize.TEXT,
-        allowNull: false, // required
-      },
-      roomCapacity: {
-        type: Sequelize.INTEGER,
-        allowNull: false, // required
-      },
-      imgUrl: {
-        type: Sequelize.STRING,
-        allowNull: false, // required
-        validate: {isUrl:true} // isUrl
-      },
-      location: {
-        type: Sequelize.STRING,
-        allowNull: false, // required
-      },
-      price: {
-        type: Sequelize.INTEGER,
-        allowNull: false, // required
-        validate: {min:100} // min 100
-      },
-      TypeId: {
-        type: Sequelize.INTEGER,
-        allowNull: false, // required
-        references:{model:"Types",key:"id"}, // fk
-        onUpdate:"cascade", // follow owner id changes
-        onDelete:"cascade" // del myself if owner gone
-      },
-      UserId: {
-        type: Sequelize.INTEGER,
-        allowNull: false, // required
-        references:{model:"Users",key:"id"}, // fk
-        onUpdate:"cascade", // follow owner id changes
-        onDelete:"cascade" // del myself if owner gone
-      },
-```
-
-Edit `model`:
-- `constraints`
-- `validation`
-
-```js
-    name: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"name required"}, // required custom err msg
-        notEmpty:{msg:"name required"} // required custom err msg
-      }
-    },
-    facility: {
-      type:DataTypes.TEXT,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"facility required"}, // required custom err msg
-        notEmpty:{msg:"facility required"} // required custom err msg
-      }
-    },
-    roomCapacity: {
-      type:DataTypes.INTEGER,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"roomCapacity required"}, // required custom err msg
-        notEmpty:{msg:"roomCapacity required"} // required custom err msg
-      }
-    },
-    imgUrl: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      validate:{
-        isUrl:{msg:"wrong imgUrl format"}, // isUrl
-        notNull:{msg:"imgUrl required"}, // required custom err msg
-        notEmpty:{msg:"imgUrl required"} // required custom err msg
-      }
-    },
-    location: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"location required"}, // required custom err msg
-        notEmpty:{msg:"location required"} // required custom err msg
-      }
-    },
-    price: {
-      type:DataTypes.INTEGER,
-      allowNull:false, // required
-      validate:{
-        len:{args:[100,Infinity],msg:"Min Price 100"}, // length min 5
-        notNull:{msg:"price required"}, // required custom err msg
-        notEmpty:{msg:"price required"} // required custom err msg
-      }
-    },
-    TypeId: {
-      type:DataTypes.INTEGER,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"TypeId required"}, // required custom err msg
-        notEmpty:{msg:"TypeId required"} // required custom err msg
-      }
-    },
-    UserId: {
-      type:DataTypes.INTEGER,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"UserId required"}, // required custom err msg
-        notEmpty:{msg:"UserId required"} // required custom err msg
-      }
-    }
-```
-
-Add `association` to model
-
-```js
-    static associate(models) {
-      Lodging.belongsTo(models.User)
-      Lodging.belongsTo(models.Type)
-    }
-```
-
-## Type Table
-
-- name : string (required)
-
-`Create Model`
-
-```
-npx sequelize model:create --name Type --attributes name:string
-```
-
-Edit `migration`:
-- `constraints`
-- `validation`
-- `fk`
-
-```js
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false // required
-      },
-```
-
-Edit `model`:
-- `constraints`
-- `validation`
-
-```js
-    name: {
-      type:DataTypes.STRING,
-      allowNull:false, // required
-      validate:{
-        notNull:{msg:"name required"}, // required custom err msg
-        notEmpty:{msg:"name required"} // required custom err msg
-      }
-    }
-```
-
-Add ```association``` to model
-
-```js
-    static associate(models) {
-      Type.hasMany(models.Lodging)
-    }
-```
-
-## Migrate
-
-```
-npx sequelize db:migrate
+npx sequelize db:create --env test
 ```
 
 ## Helper
@@ -348,136 +74,117 @@ const BCRYPT = require('bcrypt')
 const JWT = require('jsonwebtoken')
 
 
+/**
+ * A cool helper class!
+ */
 class Helper {
-  static async passwordHasher(value) {
-    // Password Hasher
-    // (throws Error)
-    try {
-      const OUT = await BCRYPT.hash(value, 10);
-      return OUT
-    } catch (error) {
-      throw error
+    /**
+     * What it says on the tin, uses bcrypt.
+     * 
+     * @param {string} value - The value to be hashed.
+     * @returns {Promise<string>} - Resolves the hashed value.
+     * @throws {error} - Hashing error.
+     */
+    static async passwordHasher(value) {
+        try {
+            const SALT = 10
+            return await BCRYPT.hash(value, SALT)
+        } catch (error) {
+            throw error
+        }
     }
-  }
-  static async findById(req, model) {
-    // Find anything by its ID
-    // (throws CustomError)
-    try {
-      const {id} = req.params
-      const OBJ = await model.findByPk(id)
-      if (!OBJ) {
-          throw({name:"CustomError",message: `Obj id:${id} not found`,status:404})
-      }
-      return {id, OBJ}
-    } catch (error) {
-      throw error
+    /**
+     * Find an obj by its id from the given sequelize model.
+     * 
+     * @param {number} value - The id.
+     * @param {import('sequelize').Model} model - The sequelize model.
+     * @returns {Promise<{id:number, OBJ:object}>} - Resolves the found object.
+     * @throws {error} - Custom error if findByPk returns falsy.
+     */
+    static async findById(id, model) {
+        try {
+            const OBJ = await model.findByPk(id)
+            if (!OBJ) {
+                throw({name:"CustomError",msg: `Obj with id:${id} is not found.`,status:404})
+            }
+            return OBJ
+        } catch (error) {
+            throw error
+        }
     }
-  }
-  static async passwordComparer(receivedPassword, databasePassword) {
-    // Password Comparer - Hashed
-    // (throws Error)
-    try {
-      const OUT = await BCRYPT.compare(receivedPassword, databasePassword)
-      return OUT
-    } catch (error) {
-      throw error
+    /**
+     * Compare the user given normal password with the hashed password in the database.
+     * 
+     * @param {string} receivedPassword - Given un-hashed password.
+     * @param {string} databasePassword - Database hashed password.
+     * @returns {Promise<boolean>} - Resolves boolean, true if password is the same.
+     * @throws {error} - Password is not the same error.
+     */
+    static async passwordComparer(receivedPassword, databasePassword) {
+        try {
+            return await BCRYPT.compare(receivedPassword, databasePassword)
+        } catch (error) {
+            throw error
+        }
     }
-  }
-  static async tokenGenerator(payload){
-    // Payload + process.env.SECRET_KEY -> TOKEN
-    const TOKEN = JWT.sign(payload,process.env.SECRET_KEY)
-    return TOKEN
-  }
-  static async tokenVerifier(token){
-    // TOKEN checker -> Bool
-    return JWT.verify(token,process.env.SECRET_KEY)
-  }
-  static async findOne(model, where, fromAuthorization=false){
-    // Find anything by ANYTHING
-    // (throws CustomError)
-    try {
-      const OBJ = await model.findOne({where})
-      if (!OBJ) {
-          if (!fromAuthorization) {
-            throw ({name:"CustomError",message:`Unauthorized`,status:401})
-          }
-          throw ({name:"CustomError",message:`Obj with this ${where} is not found`,status:404})
-      }
-      return OBJ
-    } catch (error) {
-      throw error
+    /**
+     * Token maker.
+     * Turns payload + jwt secret key into a token.
+     * payload (user data) -> token
+     * 
+     * @param {object} payload - Given payload. (user data)
+     * @returns {Promise<string>} - Resolves token.
+     * @throws {error} - JWT.sign function error.
+     */
+    static async tokenGenerator(payload){
+        try {
+            return await JWT.sign(payload,process.env.SECRET_KEY)
+        } catch (error) {
+            throw error
+        }
     }
-  }
+    /**
+     * Token receiver.
+     * Token -> payload (user data)
+     * Wrong token? Payload have non-existent (user data).
+     * Compared with databse's users unique row, it won't find anything, throw CustomError.
+     * 
+     * @param {string} token - Received token.
+     * @returns {Promise<string>} - Resolves payload.
+     * @throws {error} - JWT.verify function error.
+     */
+    static async tokenVerifier(token){
+        try {
+            return await JWT.verify(token,process.env.SECRET_KEY)
+        } catch (error) {
+            throw error
+        }
+    }
+    /**
+     * Find an obj by the given value from the given sequelize model.
+     * 
+     * @param {object} where - The criteria
+     * @param {import('sequelize').Model} model - The sequelize model.
+     * @returns {Promise<{OBJ:object}>} - Resolves the found object. 
+     */
+    static async findOne(model, where, isCheckingPayload=false){
+        try {
+            const OBJ = await model.findOne({where})
+            if (!OBJ) {
+                if (isCheckingPayload) { // TOKEN -> Payload -> Payload got the right data?
+                    throw ({name:"CustomError",msg:`unauthorized`,status:401})
+                }
+                throw ({name:"CustomError",msg:`Obj with this ${where} is not found.`,status:404})
+            }
+            return OBJ
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 
 module.exports = Helper
-```
-
-## Seed
-
-- There is only `2 admin forever`
-- `Only Admin add Staff`
-
-`Seed 2 admin`
-
-`Create` seed
-
-```
-npx sequelize seed:create --name seedUserWithAdmin
-```
-
-`Edit` seed
-
-```js
-  // UP
-  async up (queryInterface, Sequelize) {
-    // UP IS NOT CAUGHT BY BEFORE CREATE
-    const HASHED_ADMIN_PASSWORD = await passwordHasher("AdminPass123")
-    await queryInterface.bulkInsert('Users', [
-      {
-        username: 'AdminHatsune',
-        email: 'adminhatsune@lovehotel.com',
-        password: HASHED_ADMIN_PASSWORD,
-        role: 'Admin',
-        phoneNumber: '+1 123-456-7890',
-        address: '1 Love Lane, Anime City',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        username: 'AdminSakura',
-        email: 'adminsakura@lovehotel.com',
-        password: HASHED_ADMIN_PASSWORD,
-        role: 'Admin',
-        phoneNumber: '+1 987-654-3210',
-        address: '2 Romantic Road, Otaku Town',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-    ],{})
-  },
-```
-
-```js
-  // DOWN
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Users', null, {});
-  }
-```
-
-```js
-    // BEFORE CREATE
-    User.beforeCreate(async (user) => {
-        const HASHED_PASSWORD = await passwordHasher(user.password)
-        user.password = HASHED_PASSWORD
-    });
-```
-
-`Seed` database
-
-```bash
-npx sequelize db:seed:all
 ```
 
 ## Util
@@ -492,453 +199,217 @@ const ImageKit = require("imagekit")
 const storage = multer.memoryStorage()
 
 class Util {
-    static imagekit = new ImageKit({
-        publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-        privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-        urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-    })
-    static upload = multer({ storage })
+  // both are used to upload to imagekit
+  // const RESULT = await Util.imagekit.upload({file:IMAGE_BASE_64,fileName:req.file.originalname,tags:[`${req.file.originalname}`]})
+  static imagekit = new ImageKit({
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+  })
+  static upload = multer({ storage })
 }
 
 
 module.exports = Util
 ```
 
+## Table
+
+`Create model`
+
+```
+npx sequelize model:create --name Singular --attributes col:datatype,col2:datatype,..
+```
+
+`Migration`
+- `constraints`
+- `validation`
+- `fk`
+
+```js
+      col: {
+        type: Sequelize.STRING,
+        allowNull: false, // required
+        references:{model:"Plural",key:"id"}, // fk
+        onUpdate:"cascade", // fk
+        onDelete:"cascade", // fk
+        unique: true, // unique
+        defaultValue: 'value', // default value
+        validate: {
+          isEmail:true, // isEmail
+          validate: {len:[5,Infinity]}, // char len min 5
+          isUrl:true, // isUrl
+          min:100 // min number 100
+        }
+      },
+```
+
+`Model`
+- `constraints`
+- `validation`
+- `association`
+- `before create`
+
+```js
+    col: {
+      type:DataTypes.STRING,
+      allowNull:false, // required
+      unique:true, // unique
+      defaultValue:"value", // default value
+      validate:{
+        isUrl:{msg:"wrong imgUrl format"}, // isUrl
+        len:{args:[5,Infinity],msg:"col min char is 5"}, // char len min 5
+        min:{args:[100],msg:'col min value is 100.'} // min number 100
+        isEmail:{msg:"wrong email format"}, //isEmail
+        notNull:{msg:"col required"}, // required
+        notEmpty:{msg:"col required"} // required
+      }
+    },
+
+    // Association
+    static associate(models) {
+      Singular.hasMany(models.Singular)
+      Singular.belongsTo(models.Singular)
+    }
+
+    // before create hash
+    Singular.beforeCreate(async (singular) => {
+        const HASHED_PASSWORD = await Helper.passwordHasher(singular.password)
+        singular.password = HASHED_PASSWORD
+    });
+```
+
+## Migrate
+
+`create table`
+
+```
+npx sequelize db:migrate
+```
+
+`create TEST table`
+
+```
+npx sequelize db:migrate --env test
+```
+
+## Seed
+
+`Create` seed
+
+```
+npx sequelize seed:create --name seedName
+```
+
+`Edit` seed
+
+```js
+  // UP
+  async up (queryInterface, Sequelize) {
+    // hash here because UP is not caught by before create
+    await queryInterface.bulkInsert('Plural', [
+      {
+        username: 'username',
+        email: 'email@email.com',
+        password: await Helper.passwordHasher("password"),
+        role: 'role',
+        phoneNumber: '+1 123-456-7890',
+        address: '1 Love Lane, Anime City',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        username: 'username2',
+        email: 'email2@email.com',
+        password: await Helper.passwordHasher("password2"),
+        role: 'role',
+        phoneNumber: '+1 123-456-7890',
+        address: '1 Love Lane, Anime City',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    ],{})
+  },
+```
+
+```js
+  // DOWN
+  async down (queryInterface, Sequelize) {
+    await queryInterface.bulkDelete('Plural', null, {});
+  }
+```
+
+`Seed` database
+
+```bash
+npx sequelize db:seed:all
+```
+
 ## MVC
 
-models:
-1. `User`
-2. `Lodging`
-3. `Type`
-
-So:
-- `3 Controllers`
-- `3 Routers`
-
-## UserController
-
-```js
-// USELESS
-const Util = require("../util/util")
-const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
-
-
-class UserController {
-    static async getUser(req,res,next){
-        try {
-            res.status(200).json({
-                message: "Success getUser"
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
-
-module.exports = UserController
-```
-
-## TypeController
-
-```js
-const Util = require("../util/util")
-const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
-
-
-class TypeController {
-    // POST
-    static async postType(req,res,next){
-        try {
-            const {name} = req.body
-            const POSTED_TYPE = await Type.create({name})
-            res.status(201).json({
-                message: "Success create type",
-                POSTED_TYPE
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // GET
-    static async getType(req,res,next){
-        try {
-            const TYPES_ARRAY = await Type.findAll()
-            res.status(200).json({
-                message: "Success findAll type",
-                TYPES_ARRAY
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // PUT
-    static async putType(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Type) // exists?
-            const {name} = req.body
-            const UPDATED_TYPE = await Type.update({name},{where:{id},returning:true})
-            res.status(200).json({
-                message: `Success put type id:${id}`,
-                UPDATED_TYPE
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // DELETE
-    static async deleteType(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Type) // exists?
-            await Type.destroy({where:{id}})
-            res.status(200).json({
-                message: `Success delete type id:${id}`,
-                OBJ
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
-
-module.exports = TypeController
-```
-
-## LodgingController
-
-```js
-const Util = require("../util/util")
-const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
-const {Op} = require("sequelize")
-
-
-class LodgingController {
-    // POST
-    static async postLodging(req,res,next){
-        try {
-            const {name,facility,roomCapacity,imgUrl,location,price,TypeId} = req.body
-            const UserId = req.loginInfo.userId // ID from Login
-            const POSTED_LODGING = await Lodging.create({name,facility,roomCapacity,imgUrl,location,price,TypeId,UserId})
-            res.status(201).json({
-                message: "Success create lodging",
-                POSTED_LODGING
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // GET
-    static async getLodging(req,res,next){
-        try {
-            const LODGINGS_ARRAY = await Lodging.findAll({include:[{model:User,attributes:{exclude:["password"]}}]})
-            res.status(200).json({
-                message: "Success findAll lodging",
-                LODGINGS_ARRAY
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // GET (FREE + QUERY)
-    static async getLodgingPub(req,res,next){
-        try {
-            // query errors?
-            const {name,TypeId,sort,page} = req.query
-            if (name !== undefined && !isNaN(Number(name))) {
-                throw { name: "CustomError", message: "name is string", status: 400 };
-            }
-            if (TypeId !== undefined) {
-                const PARSED_TYPE_ID = Number(TypeId);
-                if (isNaN(PARSED_TYPE_ID)) {
-                    throw { name: "CustomError", message: "TypeId is number", status: 400 };
-                }
-                req.query.TypeId = Math.round(PARSED_TYPE_ID);
-            }
-            if (sort !== undefined && !isNaN(Number(sort))) {
-                throw { name: "CustomError", message: "sort is string", status: 400 };
-            }
-            if (page !== undefined) {
-                const PARSED_PAGE = Number(page);
-                if (isNaN(PARSED_PAGE)) {
-                    throw { name: "CustomError", message: "page is number", status: 400 };
-                }
-                req.query.page = Math.round(PARSED_PAGE);
-            }
-            // query builder
-            let query = {}
-            if (name) query.name = {[Op.iLike]: `%${name}%`}
-            if (TypeId) query.TypeId = TypeId
-            let order = [['createdAt', 'DESC']]
-            if (sort) order = sort === 'oldest' ? [['createdAt', 'ASC']] : order
-            const limit = 10
-            const CURRENT_PAGE = page || 1
-            const offset = (CURRENT_PAGE - 1) * limit
-            // GET
-            const LODGINGS_ARRAY = await Lodging.findAll({where:query,order,offset,limit})
-            res.status(200).json({
-                message: "Success findAll lodging",
-                LODGINGS_ARRAY
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // GET{ID}
-    static async getLodgingId(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging)
-            res.status(200).json({
-                message: `Success findById lodging id ${id}`,
-                OBJ
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // GET{ID} (FREE)
-    static async getLodgingIdPub(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging)
-            res.status(200).json({
-                message: `Success findById lodging id ${id}`,
-                OBJ
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // PUT
-    static async putLodging(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging) // exists?
-            const {name,facility,roomCapacity,imgUrl,location,price,TypeId} = req.body
-            const UPDATED_LODGING = await Lodging.update({name,facility,roomCapacity,imgUrl,location,price,TypeId,UserId:id},{where:{id},returning:true})
-            res.status(200).json({
-                message: `Success put lodging id:${id}`,
-                UPDATED_LODGING
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // DEL
-    static async deleteLodging(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging) // exists?
-            await Lodging.destroy({where:{id}})
-            res.status(200).json({
-                message: `Success delete lodging id:${id}`,
-                OBJ
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    // PATCH
-    static async patchLodging(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging) // exists?
-            if (!req.file) {
-                throw ({name:"CustomError",message:`imgUrl required`,status:400})
-            }
-            const IMAGE_BASE_64 = req.file.buffer.toString("base64")
-            const RESULT = await Util.imagekit.upload({file:IMAGE_BASE_64,fileName:req.file.originalname,tags:[`${req.file.originalname}`]})
-            const NEW_IMG_URL = RESULT.url
-            await Lodging.update({imgUrl:NEW_IMG_URL},{where:{id}})
-            res.status(200).json({
-                message: "Success patch lodging",
-                OBJ
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
-
-module.exports = LodgingController
-```
-
-## AuthController
-
-```js
-const Util = require("../util/util")
-const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
-
-
-class AuthController {
-    // POST: FOR ADMIN TO ADD STAFF
-    static async postAddUser(req,res,next) {
-        try {
-             // empty body?
-            const {username, email, password, phoneNumber, address} = req.body
-            if (!username) {
-                throw ({name:"CustomError",message:`username required`,status:400})
-            }
-            if (!email) {
-                throw ({name:"CustomError",message:`email required`,status:400})
-            }
-            if (!password) {
-                throw ({name:"CustomError",message:`password required`,status:400})
-            }
-            if (!phoneNumber) {
-                throw ({name:"CustomError",message:`phoneNumber required`,status:400})
-            }
-            if (!address) {
-                throw ({name:"CustomError",message:`address required`,status:400})
-            }
-            // POST
-            const role = "Staff"
-            const CREATED_USER = await User.create({username, email, password, phoneNumber, address, role})
-            // SEND NEW
-            const CREATED_USER_NO_PASSWORD = await User.findByPk(CREATED_USER.id,{attributes:{ exclude:['password']},})
-            res.status(201).json({
-                message: `Success create user`,
-                CREATED_USER_NO_PASSWORD
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    static async postLogin(req,res,next) {
-        // POST: MAKES TOKEN FOR USERS
-        try {
-            // empty body?
-            const {email, password} = req.body
-            if (!email) {
-                throw ({name:"CustomError",message:`email required`,status:400})
-            }
-            if (!password) {
-                throw ({name:"CustomError",message:`password required`,status:400})
-            }
-            const USER = await Helper.findOne(User, {email}) // exists?
-            const IS_PASSWORD_VALID = await Helper.passwordComparer(password, USER.password) // password ok?
-            if (!IS_PASSWORD_VALID) {
-                throw ({name:"CustomError",message:`Wrong password`,status:401})
-            }
-            // GENERATE TOKEN
-            const PAYLOAD = {
-                id:USER.id,
-                username:USER.username,
-                email:USER.email,
-                role:USER.role
-            }
-            const TOKEN = await Helper.tokenGenerator(PAYLOAD)
-            res.status(200).json({message:`Success generate token for ${USER.username}`, TOKEN})
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
-
-module.exports = AuthController
-```
-
-## HomeController
-
-```js
-// USELESS
-const Util = require("../util/util")
-const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
-
-
-class HomeController {
-    static async getHome(req,res,next){
-        try {
-            res.status(200).json({
-                message: "Success get home"
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-}
-
-
-module.exports = HomeController
-```
+- `1 Controller / model`
+- `1 Router / model`
 
 ## MIDDLEWARE
 
 ```js
+const Util = require("../util/util")
 const Helper = require("../helper/helper")
-const {User, Lodging, Type} = require("../models")
+const {Singular,Singular1,Singular2,...} = require("../models")
 
 
+/**
+ * Error handler + guards
+ */
 class Middleware {
-    // sends status + msg
-    static errorHandler(err,req,res,next){
-        console.log(err);
-        let status = 500
-        let message = "Internal Server Error"
-        switch (err.name) {
-            case "SequelizeValidationError":
-                status = 400
-                message = err.errors[0].message
-                break
-            case "SequelizeUniqueConstraintError":
-                status = 400
-                message = "Email already exists"
-                break
-            case "CustomError":
-                status = err.status
-                message = err.message
-                break
-            case "JsonWebTokenError":
-                status = 401
-                message = err.message
-                break
-        }
-        res.status(status).json({message,err})
-    }
-    // TOKEN GUARD
-    static async authentication(req,res,next){
+    /**
+     * Res status code + message based on err.name.
+     */
+    static async errorHandler(err,req,res,next){
+        // console.log(err)
         try {
-            const {authorization} = req.headers
-            if (!authorization) { // no token? throw
-                throw ({name:"CustomError",message:`Unauthorized`,status:401})
+            switch (err.name) {
+                case "SequelizeValidationError":
+                case "SequelizeUniqueConstraintError":
+                    return res.status(400).json({msg:err.errors[0].message})
+                case "CustomError":
+                    return res.status(err.status).json({msg:err.msg})
+                case "JsonWebTokenError":
+                    return res.status(401).json({msg:err.message})
+                default:
+                    return res.status(500).json({msg:"Internal Server Error"})
             }
-            // create TOKEN + update LOGIN INFO
-            const TOKEN = authorization.split(" ")[1]
+        } catch (error) {
+        }
+    }
+    /**
+     * No token? Throw.
+     * Token wrong? Throw. (AKA token's user data does not exist in database)
+     * Got correct token? Store token's user data in req.loggedInUser
+     */
+    static async tokenGuard(req,res,next){
+        try {
+            // got token? (from header authorization?)
+            if (!req.headers.authorization) throw ({name:"CustomError",msg:"unauthorized",status:401})
+            // grab token
+            const TOKEN = req.headers.authorization.split(" ")[1]
+            // token -> payload (token's user data)
             const PAYLOAD = await Helper.tokenVerifier(TOKEN)
-            const USER = await Helper.findOne(User, {email:PAYLOAD.email}, true)
-            req.loginInfo = {
-                userId:USER.id,
-                username:USER.username,
-                role:USER.role
-            }
+            // user exist? (user, where payload data)
+            const USER = await Helper.findOne(User, {username:PAYLOAD.username}, true)
+            // add user data to req.loggedInUser
+            req.loggedInUser = {id:USER.id, username:USER.username, role:USER.role}
             next()
         } catch (error) {
             next(error)
         }
     }
-    // ADMIN GUARD
-    static async authorization(req,res,next){
+    /**
+     * Role is admin? Next. Otherwise throw.
+     */
+    static async roleAdminGuard(req,res,next){
         try {
-            const {userId,role} = req.loginInfo
-            if (role !== "Admin") { // logged as staff? throw
-                throw ({name:"CustomError",message:`Forbidden`,status:403})
-            }
-            next()
-        } catch (error) {
-            next(error)
-        }
-    }
-    // Staff EDIT self LODGE only
-    static async staffEditSelfOnly(req,res,next){
-        try {
-            const {id, OBJ} = await Helper.findById(req, Lodging)
-            const {userId,role} = req.loginInfo
-            if (role==="Staff" && userId!==OBJ.UserId) { // Staff edit others? throw
-                throw {name:'CustomError',message:'Forbidden',status:403};
-            }
+            if (req.loggedInUser.role !== 2) throw ({name:"CustomError",msg:"Forbidden",status:403})
             next()
         } catch (error) {
             next(error)
@@ -950,22 +421,193 @@ class Middleware {
 module.exports = Middleware
 ```
 
-## USER_ROUTER
+## SingularController
 
 ```js
-// USELESS
-const EXPRESS = require("express")
-const UserController = require("../controllers/userController") // get controller
+const Util = require("../util/util")
+const Helper = require("../helper/helper")
+const {Singular,Singular2,Singular3,...} = require("../models")
 
 
-const USER_ROUTER = EXPRESS.Router()
+class SingularController {
+    static async getSingular(req,res,next){
+      try {
+          // query must be a string
+          if (req.query.username && !isNaN(+req.query.username)) throw {name:"CustomError",msg:"username query must be a string",status:400}
+          if (req.query.username && req.query.username.length > 50) throw {name:"CustomError",msg:"username maximum length is 50 characters",status:400}
+          // query must be a string
+          if (req.query.sort && !isNaN(+req.query.sort)) throw {name:"CustomError",msg:"sort query must be a string",status:400}
+          if (req.query.sort && req.query.sort !== "oldest") throw {name:"CustomError",msg:"sort can only be the word 'oldest'",status:400}
+          // query must be a number
+          if (req.query.reputation_score && isNaN(+req.query.reputation_score)) throw {name:"CustomError",msg:"reputation_score query must be a number",status:400}
+          if (req.query.reputation_score && req.query.reputation_score < 0) throw {name:"CustomError",msg:"reputation_score minimum value is 0",status:400}
+          if (req.query.reputation_score && !Number.isInteger(+req.query.reputation_score)) throw {name:"CustomError",msg:"reputation_score cannot be a float",status:400}
+          // query must be a number
+          if (req.query.page && isNaN(+req.query.page)) throw {name:"CustomError",msg:"page query must be a number",status:400}
+          if (req.query.page && req.query.page < 1) throw {name:"CustomError",msg:"page minimum value is 1",status:400}
+          if (req.query.page && !Number.isInteger(+req.query.page)) throw {name:"CustomError",msg:"page cannot be a float",status:400}
+          // query must be a number
+          if (req.query.role && isNaN(+req.query.role)) throw {name:"CustomError",msg:"role query must be a number",status:400}
+          if (req.query.role && req.query.role < 0) throw {name:"CustomError",msg:"role minimum value is 0",status:400}
+          if (req.query.role && !Number.isInteger(+req.query.role)) throw {name:"CustomError",msg:"role cannot be a float",status:400}
+          // query builder
+          let query = {}
+          if (req.query.username) query.username = {[Op.iLike]: `%${req.query.username}%`} // username
+          if (req.query.role) query.role = req.query.role // role
+          let order = req.query.sort === 'oldest' ? [['createdAt', 'ASC']] : [['createdAt', 'DESC']] // sort
+          // pagination
+          const limit = 10
+          const CURRENT_PAGE = req.query.page || 1
+          const offset = (CURRENT_PAGE - 1) * limit
+          // findAll (exclude password)
+          const USERS_ARRAY = await User.findAll({where:query,order,offset,limit,attributes:{exclude:["password"]}})
+          res.status(200).json({
+              msg: "success getUser",
+              users: USERS_ARRAY
+          })
+        } catch (error) {
+          next(error)
+        }
+      }
+    static async getSingularId(req,res,next){
+      try {
+          const OBJ = await Helper.findById(req.params.id, Lodging)
+          res.status(200).json({
+              msg: "success getSingularId",
+              user: OBJ
+          })
+        } catch (error) {
+          next(error)
+        }
+      }
+    static async postSingular(req,res,next){
+      try {
+        // const {name,facility,roomCapacity,imgUrl,location,price,TypeId} = req.body
+        // const UserId = req.loginInfo.userId // ID from Login -> use this to create (so that resource belongs to that user ID)
+        // const POSTED_LODGING = await Lodging.create({name,facility,roomCapacity,imgUrl,location,price,TypeId,UserId})
+        const POSTED_SINGULAR = await Singular.create({name:req.body.name})
+        res.status(201).json({
+          message: "Success postSingular",
+          POSTED_SINGULAR
+        })
+        } catch (error) {
+          next(error)
+        }
+      }
+    static async putSingular(req,res,next){
+        try {
+            const OBJ = await Helper.findById(req.params.id, Singular) // don't exists? throw
+            // const {name,facility,roomCapacity,imgUrl,location,price,TypeId} = req.body
+            // const UPDATED_LODGING = await Lodging.update({name,facility,roomCapacity,imgUrl,location,price,TypeId,UserId:id},{where:{id},returning:true})
+            const UPDATED_SINGULAR = await Singular.update({name:req.body.name},{where:{id:req.params.id},returning:true})
+            res.status(200).json({
+                message: "Success putSingular",
+                UPDATED_SINGULAR
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    static async deleteSingular(req,res,next){
+        try {
+            const OBJ = await Helper.findById(req.params.id, Singular) // don't exists? throw
+            await Singular.destroy({where:{id:req.params.id}})
+            res.status(200).json({
+                message: "Success deleteSingular",
+                OBJ
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    static async patchSingular(req,res,next){
+        try {
+            const OBJ = await Helper.findById(req, Singular) // don't exists? throw
+            // no req.file? (img file) throw
+            if (!req.file) {
+                throw ({name:"CustomError",message:`imgUrl required`,status:400})
+            }
+            // req.file -> base64
+            const IMAGE_BASE_64 = req.file.buffer.toString("base64")
+            // upload base64 | base64 -> url
+            const RESULT = await Util.imagekit.upload({file:IMAGE_BASE_64,fileName:req.file.originalname,tags:[`${req.file.originalname}`]})
+            const NEW_IMG_URL = RESULT.url
+            // patch imgUrl = url
+            await Lodging.update({imgUrl:NEW_IMG_URL},{where:{id}})
+            res.status(200).json({
+                message: "Success deleteSingular",
+                OBJ
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+}
 
-// controller handle endpoints
-USER_ROUTER.get("/", UserController.getHome)
+
+module.exports = SingularController
+```
+
+## AuthController
+
+```js
+const Util = require("../util/util")
+const Helper = require("../helper/helper")
+const {User, Lodging, Type} = require("../models")
 
 
-module.exports = USER_ROUTER
+class AuthController {
+    // POST STAFF: FOR ADMIN ONLY
+    static async postAddUser(req,res,next) {
+        try {
+             // empty body? throw
+            const {username, email, password, phoneNumber, address} = req.body
+            if (!username) throw ({name:"CustomError",message:`username required`,status:400})
+            if (!email) throw ({name:"CustomError",message:`email required`,status:400})
+            if (!password) throw ({name:"CustomError",message:`password required`,status:400})
+            if (!phoneNumber) throw ({name:"CustomError",message:`phoneNumber required`,status:400})
+            if (!address) throw ({name:"CustomError",message:`address required`,status:400})
+            // POST
+            const role = "Staff"
+            const CREATED_USER = await User.create({username, email, password, phoneNumber, address, role})
+            // res status
+            const CREATED_USER_NO_PASSWORD = await User.findByPk(CREATED_USER.id,{attributes:{ exclude:['password']},})
+            res.status(201).json({
+                message: `Success create user`,
+                CREATED_USER_NO_PASSWORD
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    static async postLogin(req,res,next) {
+        // POST: GENERATES TOKEN FOR USERS
+        try {
+            // empty body?
+            const {email, password} = req.body
+            if (!email) throw ({name:"CustomError",message:`email required`,status:400})
+            if (!password) throw ({name:"CustomError",message:`password required`,status:400})
+            const USER = await Helper.findOne(User, {email}) // user exists?
+            if (!await Helper.passwordComparer(password, USER.password)) throw ({name:"CustomError",message:`Wrong password`,status:401}) // password correct?
+            // payload
+            const PAYLOAD = {
+                id:USER.id,
+                username:USER.username,
+                email:USER.email,
+                role:USER.role
+            }
+            // payload -> token
+            const TOKEN = await Helper.tokenGenerator(PAYLOAD)
+            // res status
+            res.status(200).json({message:`Success generate token for ${USER.username}`, TOKEN})
+        } catch (error) {
+            next(error)
+        }
+    }
+}
 
+
+module.exports = AuthController
 ```
 
 ## TYPE_ROUTER
