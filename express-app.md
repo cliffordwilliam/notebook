@@ -55,15 +55,10 @@ npx sequelize init
 }
 ```
 
-`Create database`
+`Create database and test database`
 
 ```
 npx sequelize db:create
-```
-
-`Create TEST database`
-
-```
 npx sequelize db:create --env test
 ```
 
