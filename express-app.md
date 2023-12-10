@@ -276,15 +276,10 @@ npx sequelize model:create --name Singular --attributes col:datatype,col2:dataty
 
 ## Migrate
 
-`create table`
+`Create database and test database`
 
 ```
 npx sequelize db:migrate
-```
-
-`create TEST table`
-
-```
 npx sequelize db:migrate --env test
 ```
 
