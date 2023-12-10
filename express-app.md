@@ -38,14 +38,14 @@ npx sequelize init
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "name",
+    "database": "amenhotep",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "postgres",
-    "database": "nameTest",
+    "database": "amenhotepTest",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
