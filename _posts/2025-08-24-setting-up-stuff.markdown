@@ -185,10 +185,3 @@ nvm use --lts
 node -v
 npm -v
 
------------
-
-do not forget to install this
-
-sudo pacman -S watchman
-
-this is so that neovim can watch file changes, like adding new file will make lsp demon aware
