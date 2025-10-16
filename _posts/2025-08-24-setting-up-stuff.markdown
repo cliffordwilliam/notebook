@@ -5,90 +5,129 @@ date:   2025-08-24 11:37:18 -0500
 categories: jekyll update
 ---
 
-You want to increase the font size both in the st and the dwm. But doing this causes weird gaps, you can fix this by setting this in the dwm config
-{% highlight lua %}
+use the Install.sh file in the arch instal env
+
+-------------
+
+check for battery, with this
+
+for b in /sys/class/power_supply/*; do     if grep -q "Battery" "$b/type" 2>/dev/null; then         basename "$b";     fi; done
+
+then go out
+
+alt + shift + Q
+
+edit the slstatus outside
+
+using this or whatever is your battery name is
+
+static const struct arg args[] = {
+        /* function format          argument */
+        { datetime, "%s",           "%F %T" },
+        { battery_state, " %s", "BAT0" },
+        { battery_perc, " %s%%", "BAT0" },
+};
+
+then make clean, make, and cp the binary
+
+make clean
+make
+cp slstatus ~/.local/bin/
+
+
+------------------
+
+you need some packages first, these are needed by nvim when you edit the config and npm i
+
+the xclip is for copy paste to system clipboard, the ripgrep and fd is for telescope and fast finding, the lsp python is needed too, you can add more lsp later
+
+sudo pacman -S xclip ripgrep fd python-lsp-server
+
+now need to setup the nvim
+
+just copy from github the init.lua, then go to nvim and use Lazy sync, its like npm i
+
+---------------------
+
+make dwm 16 and st 20 font size
+
+its hard to see
+
+you need to set this in the dwm, this fixes the weird gaps after you edit the text sizes
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
-{% endhighlight %}
 
----
+------------------
 
-Optional but you can change the color of the background for st terminal
-Make sure to go out of dwm first, then edit the file there,
-set the color to #001a33, make clean, make, cp the st bin to local bin, then startx again.
+get background image from repo, should be named bg
 
----
+then get this feh
 
-This is how you set up stuff right after setting up your `Neovim` `init.lua`. The first thing you need is the `xclip`, this is so that when you yank, you use the system clipboard:
-
-{% highlight bash %}
-sudo pacman -S xclip
-{% endhighlight %}
-
-Then add the following anywhere inside your `init.lua`.
-{% highlight lua %}
-vim.opt.clipboard = "unnamedplus"
-{% endhighlight %}
-
-Now, whenever you yank, you use the system clipboard.
-
----
-
-Run this so that now git uses nvim as default editor not vim
-{% highlight lua %}
-git config --global core.editor "nvim"
-{% endhighlight %}
-
-
----
-
-Github needs ssh key, you need a mean to generate one in `Arch`, this is what you need:
-{% highlight lua %}
-sudo pacman -S openssh
-{% endhighlight %}
-
----
-
-To get docker running on each boot do the following
-{% highlight lua %}
-sudo pacman -S docker
-sudo pacman -S docker-compose
-sudo systemctl enable docker.service
-sudo systemctl start docker.service
-sudo usermod -aG docker $USER
-newgrp docker
-{% endhighlight %}
-
----
-
-Setting up background is easy just get this
-
-{% highlight bash %}
 sudo pacman -S feh
-{% endhighlight %}
 
-Then call it in xinitrc so that it runs on boot to fill the bg
-{% highlight text %}
+then might as well get picom for transparency
+
+sudo pacman -S picom
+
+then we need this in xinitrc
+
 feh --bg-fill ~/Downloads/bg.jpg &
 picom &
 slstatus &
 exec dwm
-{% endhighlight %}
 
-Notice that picom is there too, that calls picom on boot as well
+then edit the picom config like this
 
-I use picom to add transparency to the st terminal this way
-{% highlight bash %}
-sudo pacman -S picom
-picom --config ~/.config/picom/picom.conf &
-{% endhighlight %}
+make this file ~/.config/picom/picom.conf 
 
-Edit the config like so
-{% highlight text %}
 backend = "xrender";
 fading = true
 fade-delta = 4
 opacity-rule = [
   "95:class_g = 'st-256color'",
 ];
-{% endhighlight %}
 
+then just exit dwm and go back in again
+exit as in use alt shift Q, go back in with startx
+
+---------------------
+
+finally can change the st color theme with catpucin
+
+just use this in place of whatever you have in the st config
+
+/* Terminal colors (16 first used in escape sequence) */
+static const char *colorname[] = {
+	/* 8 normal colors */
+	"#45475A",
+	"#F38BA8",
+	"#A6E3A1",
+	"#F9E2AF",
+	"#89B4FA",
+	"#F5C2E7",
+	"#94E2D5",
+	"#BAC2DE",
+
+	/* 8 bright colors */
+	"#585B70",
+	"#F38BA8",
+	"#A6E3A1",
+	"#F9E2AF",
+	"#89B4FA",
+	"#F5C2E7",
+	"#94E2D5",
+	"#A6ADC8",
+
+[256] = "#CDD6F4", /* default foreground colour */
+[257] = "#1E1E2E", /* default background colour */
+[258] = "#F5E0DC", /*575268*/
+
+};
+
+
+/*
+ * foreground, background, cursor, reverse cursor
+ */
+unsigned int defaultfg = 256;
+unsigned int defaultbg = 257;
+unsigned int defaultcs = 258;
+static unsigned int defaultrcs = 258;
