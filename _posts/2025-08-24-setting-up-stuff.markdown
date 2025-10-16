@@ -137,3 +137,28 @@ static unsigned int defaultrcs = 258;
 do not forget to unmute too btw
 
 amixer sset Master 90% unmute
+
+---
+
+generate ssh for github
+
+sudo pacman -S openssh
+git config --global user.name "Clifford William"
+git config --global user.email ccliffordwilliam@gmail.com
+git config --global init.defaultBranch main
+git config --global pull.rebase false
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub
+
+then just set that to github as ssh
+
+------------
+
+do this to get docker running on each session
+
+sudo pacman -S docker
+sudo pacman -S docker-compose
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+sudo usermod -aG docker $USER
+newgrp docker
