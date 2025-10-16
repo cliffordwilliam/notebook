@@ -162,3 +162,25 @@ sudo systemctl enable docker.service
 sudo systemctl start docker.service
 sudo usermod -aG docker $USER
 newgrp docker
+
+-----------
+
+this is how we get node going
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+this should have beed added but make sure that it has this. it let each session know the nvm
+~/.bashrc
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+reload the shell session
+source ~/.bashrc  # or ~/.zshrc etc.
+
+for each session you can install whichever you want and use whichever you want that you have in your arsenal
+use lts to get node
+nvm install --lts
+nvm use --lts
+
+node -v
+npm -v
