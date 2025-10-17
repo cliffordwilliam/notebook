@@ -185,3 +185,14 @@ nvm use --lts
 node -v
 npm -v
 
+-----------
+
+sudo pacman -s fastfetch
+
+then add this to ~/.bashrc
+
+fastfetch
+
+at the very top
+
+optional if you want to
