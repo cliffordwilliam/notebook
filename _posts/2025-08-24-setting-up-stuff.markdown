@@ -199,4 +199,4 @@ optional if you want to
 
 you can also change the PSI value to this to change the prompt color to if you want
 
-PS1='\[\033[01;32m\][\u@\h\[\033[00m\] \[\033[01;34m\]\W\[\033[01;32m\]]\$\[\033[00m\] '
+PS1='\[\033[01;32m\][\u@\h\[\033[00m\] \[\033[01;34m\]\w\[\033[01;32m\]]\$\[\033[00m\] '
