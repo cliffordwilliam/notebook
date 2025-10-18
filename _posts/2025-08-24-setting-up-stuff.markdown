@@ -309,7 +309,7 @@ PS1='\[\033[01;32m\][\u@\h\[\033[00m\] \[\033[01;34m\]\w\[\033[01;32m\]]\$\[\033
 
 Edit your `~/.xinitrc` to configure both your laptop screen (`eDP-1`) and any external monitor (`HDMI-1`) before starting DWM:
 
-```bash
+{% highlight bash %}
 # ~/.xinitrc
 
 # Background
@@ -329,7 +329,7 @@ fi
 
 # Start DWM
 exec dwm
-```
+{% endhighlight %}
 
 ✅ Notes:
 
@@ -353,3 +353,22 @@ And use this to switch the window to the other monitor
 
 Re-run the `install.sh` and follow this guide from top to bottom.  
 **Note:** Disks will be wiped, so backup important data externally or via Git remote.
+
+---
+
+## 14. Update Arch System
+
+You might want jq for curl to test endpoint too
+
+{% highlight bash %}
+sudo pacman -S jq
+
+curl -X POST http://localhost:3000/waffles   -H "Content-Type: application/json"   -d '{"waffle_name": "Belgian Delight"}' | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    69  100    35  100    34  10590  10287 --:--:-- --:--:-- --:--:-- 23000
+{
+  "id": "1",
+  "name": "Belgian Delight"
+}
+{% endhighlight %}
