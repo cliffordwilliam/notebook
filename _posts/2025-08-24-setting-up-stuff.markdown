@@ -210,9 +210,10 @@ amixer sset Master 90% unmute
 
 ---
 
-## 8. Generate SSH Key for GitHub
+## 8. Set Github Default Editor to Nvim and Generate SSH Key for GitHub
 
 {% highlight bash %}
+git config --global core.editor "nvim"
 sudo pacman -S openssh
 git config --global user.name "Clifford William"
 git config --global user.email ccliffordwilliam@gmail.com
