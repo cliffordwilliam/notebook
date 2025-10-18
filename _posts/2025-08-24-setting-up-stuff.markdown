@@ -213,6 +213,21 @@ node -v
 npm -v
 {% endhighlight %}
 
+
+These packages are needed for editing configs and using `npm`:
+
+* **`typescript` and `typescript-language-server` for TypeScript LSP support**
+
+Install them with:
+
+{% highlight bash %}
+# Install TypeScript LSP globally via npm
+
+npm install -g typescript typescript-language-server
+{% endhighlight %}
+
+This will ensure that `ts_ls` in your `init.lua` can find the TypeScript language server and work properly.
+
 ---
 
 ## 11. Install Fastfetch
