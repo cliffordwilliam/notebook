@@ -5,7 +5,60 @@ date:   2025-08-24 11:37:18 -0500
 categories: jekyll update
 ---
 
-Use the `Install.sh` file in the Arch install environment.
+## 🚀 Using `Install.sh` in Arch Installation Environment
+
+1. **Boot into the Arch ISO** and enter the installation environment.
+
+2. **Unblock Wi-Fi (if blocked):**
+
+```bash
+rfkill unblock wifi
+```
+
+3. **Connect to the internet in the live environment:**
+
+```bash
+iwctl
+device list
+station wlan0 scan
+station wlan0 get-networks
+station wlan0 connect "WIFI NAME"
+exit
+```
+
+4. **Download and run the `Install.sh` script:**
+
+```bash
+curl -o- https://raw.githubusercontent.com/cliffordwilliam/arch-install/main/Install.sh | bash
+```
+
+> This will perform the automated setup for your Arch installation environment.
+
+5. **After logging in for the first time**:
+
+   * Turn on the firewall before using `nmtui`:
+
+   ```bash
+   systemctl enable ufw
+   sudo ufw default deny incoming
+   sudo ufw default allow outgoing
+   sudo ufw --force enable
+   ```
+
+   * Connect to the internet via:
+
+   ```bash
+   nmtui
+   ```
+
+   1. Pick **Activate a connection**
+   2. Pick **Quit**
+
+6. Enter DWM:
+
+   ```bash
+   startx
+   ```
 
 ---
 
