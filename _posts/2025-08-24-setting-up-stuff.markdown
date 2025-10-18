@@ -339,6 +339,14 @@ exec dwm
 
 This keeps the setup **minimal, easy to maintain, and flexible** for any future monitors you connect.
 
+You can use this to switch active monitor
+
+`Mod + < or Mod + > to switch the currently active monitor`
+
+And use this to switch the window to the other monitor
+
+`To move a window to another monitor in dwm, focus the window and then press Mod + Shift + < or Mod + Shift + >`
+
 ---
 
 ## 13. Update Arch System
