@@ -305,7 +305,43 @@ PS1='\[\033[01;32m\][\u@\h\[\033[00m\] \[\033[01;34m\]\w\[\033[01;32m\]]\$\[\033
 
 ---
 
-## 12. Update Arch System
+## 12. Minimal Dual-Monitor Setup in `~/.xinitrc`
+
+Edit your `~/.xinitrc` to configure both your laptop screen (`eDP-1`) and any external monitor (`HDMI-1`) before starting DWM:
+
+```bash
+# ~/.xinitrc
+
+# Background
+feh --bg-fill ~/Downloads/bg.jpg &
+
+# Compositor
+picom &
+
+# Status bar
+slstatus &
+
+# Minimal dual-monitor setup
+xrandr --output eDP-1 --primary --auto
+if xrandr | grep "HDMI-1 connected" &>/dev/null; then
+    xrandr --output HDMI-1 --auto --right-of eDP-1
+fi
+
+# Start DWM
+exec dwm
+```
+
+✅ Notes:
+
+* `--auto` automatically picks the preferred resolution of each monitor.
+* The `if` statement ensures the script works even when no external monitor is connected.
+* The external monitor will appear **to the right of the laptop screen**; you can change `--right-of` to `--left-of` if you prefer.
+
+This keeps the setup **minimal, easy to maintain, and flexible** for any future monitors you connect.
+
+---
+
+## 13. Update Arch System
 
 Re-run the `install.sh` and follow this guide from top to bottom.  
 **Note:** Disks will be wiped, so backup important data externally or via Git remote.
