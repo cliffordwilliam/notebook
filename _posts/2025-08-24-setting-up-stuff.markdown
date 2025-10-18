@@ -5,7 +5,7 @@ date:   2025-08-24 11:37:18 -0500
 categories: jekyll update
 ---
 
-## 🚀 Using `Install.sh` in Arch Installation Environment
+## 🚀 Using `install.sh` in Arch Installation Environment
 
 1. **Boot into the Arch ISO** and enter the installation environment.
 
@@ -29,7 +29,7 @@ exit
 4. **Download and run the `Install.sh` script:**
 
 ```bash
-curl -o- https://raw.githubusercontent.com/cliffordwilliam/arch-install/main/Install.sh | bash
+curl -o- https://raw.githubusercontent.com/cliffordwilliam/arch-install/main/install.sh | bash
 ```
 
 > This will perform the automated setup for your Arch installation environment.
