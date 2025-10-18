@@ -7,6 +7,8 @@ categories: jekyll update
 
 ## 🚀 Using `install.sh` in Arch Installation Environment
 
+Note that what happens after install.sh is not automated because those are optional, machine works fine after instsall.sh anyways the rest are just fluffs.
+
 1. **Boot into the Arch ISO** and enter the installation environment.
 
 2. **Unblock Wi-Fi (if blocked):**
