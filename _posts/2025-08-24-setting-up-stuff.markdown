@@ -26,7 +26,7 @@ station wlan0 connect "WIFI NAME"
 exit
 ```
 
-4. **Download and run the `Install.sh` script:**
+4. **Download and run the `install.sh` script:**
 
 ```bash
 curl -o- https://raw.githubusercontent.com/cliffordwilliam/arch-install/main/install.sh | bash
@@ -305,5 +305,5 @@ PS1='\[\033[01;32m\][\u@\h\[\033[00m\] \[\033[01;34m\]\w\[\033[01;32m\]]\$\[\033
 
 ## 12. Update Arch System
 
-Re-run the `Install.sh` and follow this guide from top to bottom.  
+Re-run the `install.sh` and follow this guide from top to bottom.  
 **Note:** Disks will be wiped, so backup important data externally or via Git remote.
