@@ -166,12 +166,15 @@
   }
   .content :global(code) {
     background: #f3f4f6;
-    padding: 0.15em 0.4em;
-    border-radius: 0.25rem;
+    color: #be185d;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
     font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
     font-size: 0.875em;
     font-weight: 400;
   }
+  .content :global(code::before),
+  .content :global(code::after) { content: none; }
   .content :global(pre) {
     background: #1e1e2e;
     color: #cdd6f4;
