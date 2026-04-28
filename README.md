@@ -12,7 +12,7 @@ Builds the app inside Docker via `compose.yaml`, serves it on `http://localhost:
 
 ## Editor features
 
-- Bold, headings (H1–H3), bullet and numbered lists, blockquotes, code blocks
+- Bold, headings (H2–H3), bullet and numbered lists, blockquotes, code blocks
 - C++ syntax highlighting in code blocks (Catppuccin Mocha theme)
 - Sticky toolbar — stays visible when writing long notes
 - Full-text search across title and content on the notes list
@@ -96,4 +96,3 @@ Dockerfile        — two-stage build: bun build → nginx image
 .env              — your connection string (git-ignored)
 .env.example      — template for the above
 ```
-# notebook
