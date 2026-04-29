@@ -181,15 +181,16 @@
 
 <style>
   .page {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 2rem 1rem;
   }
 
   .layout {
     display: grid;
-    grid-template-columns: minmax(0, 860px) 17rem;
+    grid-template-columns: minmax(0, 65ch) 17rem;
     gap: 2.5rem;
+    justify-content: center;
   }
 
   /* ── TOC — copied from theodinproject ── */
