@@ -15,6 +15,7 @@
     { value: 'markup',     label: 'HTML' },
     { value: 'json',       label: 'JSON' },
     { value: 'sql',        label: 'SQL' },
+    { value: 'yaml',       label: 'YAML' },
   ];
 
   export let content = '';

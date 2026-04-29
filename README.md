@@ -10,6 +10,21 @@ A browser-based rich text note taking app. The only dependency is Docker.
 
 Builds the app inside Docker via `compose.yaml`, serves it on `http://localhost:8080`, and opens your browser. Press Ctrl+C to stop — the container and locally built image are removed automatically.
 
+## Editor keyboard shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl+B` | Bold |
+| `Ctrl+Alt+2` | Heading 2 |
+| `Ctrl+Alt+3` | Heading 3 |
+| `Ctrl+Shift+8` | Bullet list |
+| `Ctrl+Shift+7` | Ordered list |
+| `Ctrl+Shift+B` | Blockquote |
+| `Ctrl+Alt+C` | Code block |
+| `Ctrl+E` | Inline code |
+| `Ctrl+Z` | Undo |
+| `Ctrl+Shift+Z` | Redo |
+
 ## Features
 
 - Bold, headings (H2–H3), bullet and numbered lists, blockquotes, code blocks
@@ -77,6 +92,42 @@ To disconnect or switch databases, click Disconnect on the notes list.
 | `content` | `content` | TEXT | stores TipTap HTML output |
 | `createdAt` | `created_at` | TIMESTAMPTZ | aliased in queries |
 | `updatedAt` | `updated_at` | TIMESTAMPTZ | aliased in queries |
+
+## Adding a language
+
+Two files need to change — one for the editor dropdown, one for the read view's syntax highlighting.
+
+**1. Add the Prism import — `src/pages/NoteView.svelte`**
+
+Import the Prism language component near the other imports at the top of the `<script>` block:
+
+```js
+import 'prismjs/components/prism-<language-id>';
+```
+
+Some languages depend on others. For example `prism-cpp` requires `prism-clike` and `prism-c` to be imported first. Check the [Prism component list](https://prismjs.com/#supported-languages) for dependencies.
+
+**2. Add the dropdown entry — `src/components/Editor.svelte`**
+
+Add a new object to the `LANGUAGES` array (lines 7–18):
+
+```js
+{ value: '<language-id>', label: '<Display Name>' },
+```
+
+`value` must be the Prism language identifier (same string used in the import path above, e.g. `'rust'`, `'go'`, `'java'`). This value is what TipTap stores on the `<code>` element as the `language-*` CSS class, which Prism then matches when highlighting.
+
+**Example — adding Rust**
+
+`src/pages/NoteView.svelte`:
+```js
+import 'prismjs/components/prism-rust';
+```
+
+`src/components/Editor.svelte`:
+```js
+{ value: 'rust', label: 'Rust' },
+```
 
 ## Error handling
 
