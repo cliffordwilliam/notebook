@@ -2,24 +2,40 @@
   import { onMount } from 'svelte';
   import { credentials } from '../stores/credentials.js';
   import { navigate } from '../stores/router.js';
-  import { dbGetNotes, dbDeleteNote, handleError } from '../lib/db.js';
+  import { dbGetNotes, dbCountNotes, dbDeleteNote, handleError } from '../lib/db.js';
   import { toasts } from '../stores/toasts.js';
 
   const PER_PAGE = 10;
   let search = '';
   let page = 1;
   let notes = [];
+  let total = 0;
   let loading = true;
+  let debounceTimer;
 
-  onMount(async () => {
+  $: totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
+  async function fetchNotes() {
+    loading = true;
     try {
-      notes = await dbGetNotes();
+      [notes, total] = await Promise.all([
+        dbGetNotes(search.trim(), page, PER_PAGE),
+        dbCountNotes(search.trim()),
+      ]);
     } catch (e) {
       handleError(e);
     } finally {
       loading = false;
     }
-  });
+  }
+
+  onMount(fetchNotes);
+
+  function onSearchInput() {
+    page = 1;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchNotes, 300);
+  }
 
   function stripHtml(html) {
     const div = document.createElement('div');
@@ -35,24 +51,12 @@
     });
   }
 
-  $: filtered = notes.filter(n => {
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
-    return (
-      n.title.toLowerCase().includes(q) ||
-      stripHtml(n.content).toLowerCase().includes(q)
-    );
-  });
-
-  $: totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  $: paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-
   async function handleDelete(id) {
     if (!confirm('Delete this note? This cannot be undone.')) return;
     try {
       await dbDeleteNote(id);
-      notes = notes.filter(n => n.id !== id);
       toasts.add('Note deleted.');
+      await fetchNotes();
     } catch (e) {
       handleError(e);
     }
@@ -78,9 +82,9 @@
   <div class="search-row">
     <input
       type="search"
-      placeholder="Search by title or content..."
+      placeholder="Search by title..."
       bind:value={search}
-      on:input={() => (page = 1)}
+      on:input={onSearchInput}
     />
   </div>
 
@@ -100,7 +104,7 @@
         </li>
       {/each}
     </ul>
-  {:else if paginated.length === 0}
+  {:else if notes.length === 0}
     <div class="empty">
       {#if search.trim()}
         No notes match &ldquo;{search}&rdquo;
@@ -110,7 +114,7 @@
     </div>
   {:else}
     <ul class="note-list">
-      {#each paginated as note (note.id)}
+      {#each notes as note (note.id)}
         <li class="note-card">
           <button class="note-body" on:click={() => navigate('view', { id: note.id })}>
             <span class="note-title">{note.title || 'Untitled'}</span>
@@ -127,9 +131,9 @@
 
     {#if totalPages > 1}
       <div class="pagination">
-        <button disabled={page === 1} on:click={() => page--}>&#8592; Prev</button>
+        <button disabled={page === 1} on:click={() => { page--; fetchNotes(); }}>&#8592; Prev</button>
         <span>{page} / {totalPages}</span>
-        <button disabled={page === totalPages} on:click={() => page++}>Next &#8594;</button>
+        <button disabled={page === totalPages} on:click={() => { page++; fetchNotes(); }}>Next &#8594;</button>
       </div>
     {/if}
   {/if}

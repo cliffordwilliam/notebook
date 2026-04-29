@@ -31,15 +31,39 @@ function classify(e) {
   throw e;
 }
 
-export async function dbGetNotes() {
+export async function dbGetNotes(search, page, perPage) {
+  const offset = (page - 1) * perPage;
+  const sql = getSql();
   try {
-    return await getSql()`
+    if (search) {
+      return await sql`
+        SELECT id, title, content,
+               created_at AS "createdAt",
+               updated_at AS "updatedAt"
+        FROM notes
+        WHERE title ILIKE ${'%' + search + '%'}
+        ORDER BY updated_at DESC
+        LIMIT ${perPage} OFFSET ${offset}
+      `;
+    }
+    return await sql`
       SELECT id, title, content,
              created_at AS "createdAt",
              updated_at AS "updatedAt"
       FROM notes
       ORDER BY updated_at DESC
+      LIMIT ${perPage} OFFSET ${offset}
     `;
+  } catch (e) { classify(e); }
+}
+
+export async function dbCountNotes(search) {
+  const sql = getSql();
+  try {
+    const rows = search
+      ? await sql`SELECT COUNT(*)::int AS count FROM notes WHERE title ILIKE ${'%' + search + '%'}`
+      : await sql`SELECT COUNT(*)::int AS count FROM notes`;
+    return rows[0].count;
   } catch (e) { classify(e); }
 }
 
