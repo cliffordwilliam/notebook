@@ -1,16 +1,95 @@
 <script>
-  import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { navigate } from '../stores/router.js';
   import { dbGetNote, dbDeleteNote, handleError } from '../lib/db.js';
-  import hljs from 'highlight.js/lib/core';
-  import cpp from 'highlight.js/lib/languages/cpp';
-
-  hljs.registerLanguage('cpp', cpp);
+  import { toasts } from '../stores/toasts.js';
+  import Prism from 'prismjs';
+  import 'prismjs/components/prism-clike';
+  import 'prismjs/components/prism-c';
+  import 'prismjs/components/prism-cpp';
+  import 'prismjs/components/prism-markup';
+  import 'prismjs/components/prism-css';
+  import 'prismjs/components/prism-javascript';
+  import 'prismjs/components/prism-typescript';
+  import 'prismjs/components/prism-python';
+  import 'prismjs/components/prism-bash';
+  import 'prismjs/components/prism-json';
+  import 'prismjs/components/prism-sql';
 
   export let id;
 
   let note = null;
   let loading = true;
+  let contentEl;
+  let tocEl;
+  let hasToc = false;
+  let scrollHandler;
+
+  function buildToc() {
+    if (!contentEl || !tocEl) return;
+    const headings = Array.from(contentEl.querySelectorAll('h2')).filter(h => h.textContent.trim());
+    if (!headings.length) return;
+    headings.forEach((h, i) => {
+      if (!h.id) h.id = `h-${i}`;
+      const li = document.createElement('li');
+      li.className = 'toc-item';
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent;
+      li.appendChild(a);
+      tocEl.appendChild(li);
+    });
+    hasToc = true;
+  }
+
+  function updateSeen() {
+    if (!contentEl || !tocEl) return;
+    const headings = Array.from(contentEl.querySelectorAll('h2'));
+    const items = Array.from(tocEl.querySelectorAll('.toc-item'));
+    let lastSeenIndex = -1;
+    headings.forEach((h, i) => {
+      if (!items[i]) return;
+      const seen = h.getBoundingClientRect().top < window.innerHeight;
+      items[i].classList.toggle('seen', seen);
+      if (seen) lastSeenIndex = i;
+    });
+    items.forEach((item, i) => item.classList.toggle('active', i === lastSeenIndex));
+  }
+
+  function enhanceCodeBlocks(containerEl) {
+    containerEl.querySelectorAll('pre').forEach(pre => {
+      const code = pre.querySelector('code');
+      if (!code) return;
+
+      // Wrap pre in .code-toolbar for copy button positioning
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-toolbar';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      // Copy button
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(code.textContent).then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+        });
+      });
+      wrapper.appendChild(btn);
+
+      // Line numbers — same DOM structure as prism-line-numbers plugin
+      const lines = code.textContent.split('\n');
+      if (lines.at(-1) === '') lines.pop();
+      const rows = document.createElement('span');
+      rows.className = 'line-numbers-rows';
+      rows.setAttribute('aria-hidden', 'true');
+      lines.forEach(() => rows.appendChild(document.createElement('span')));
+      pre.classList.add('line-numbers');
+      code.appendChild(rows);
+    });
+  }
 
   onMount(async () => {
     try {
@@ -22,7 +101,19 @@
     }
     if (!note) return;
     await tick();
-    document.querySelectorAll('.content pre code').forEach(el => hljs.highlightElement(el));
+    contentEl.querySelectorAll('pre code:not([class*="language-"])').forEach(code => {
+      code.classList.add('language-cpp');
+    });
+    Prism.highlightAllUnder(contentEl);
+    enhanceCodeBlocks(contentEl);
+    buildToc();
+    updateSeen();
+    scrollHandler = () => updateSeen();
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+  });
+
+  onDestroy(() => {
+    if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
   });
 
   function formatDate(iso) {
@@ -39,6 +130,7 @@
     if (!confirm('Delete this note? This cannot be undone.')) return;
     try {
       await dbDeleteNote(id);
+      toasts.add('Note deleted.');
       navigate('list');
     } catch (e) {
       handleError(e);
@@ -48,7 +140,14 @@
 
 <div class="page">
   {#if loading}
-    <p class="loading">Loading...</p>
+    <div class="skeleton-view">
+      <div class="skeleton sk-title"></div>
+      <div class="skeleton sk-meta"></div>
+      <div class="skeleton sk-para"></div>
+      <div class="skeleton sk-para short"></div>
+      <div class="skeleton sk-para"></div>
+      <div class="skeleton sk-para medium"></div>
+    </div>
   {:else if note}
     <div class="top-bar">
       <button class="btn-back" on:click={() => navigate('list')}>&#8592; Back</button>
@@ -58,30 +157,94 @@
       </div>
     </div>
 
-    <article>
-      <h1>{note.title || 'Untitled'}</h1>
-      <div class="meta">
-        <span>Created {formatDate(note.createdAt)}</span>
-        {#if note.updatedAt !== note.createdAt}
-          <span>&middot; Updated {formatDate(note.updatedAt)}</span>
-        {/if}
-      </div>
-      <div class="content">{@html note.content}</div>
-    </article>
+    <div class="layout">
+      <article>
+        <h1>{note.title || 'Untitled'}</h1>
+        <div class="meta">
+          <span>Created {formatDate(note.createdAt)}</span>
+          {#if note.updatedAt !== note.createdAt}
+            <span>&middot; Updated {formatDate(note.updatedAt)}</span>
+          {/if}
+        </div>
+        <div class="content" bind:this={contentEl}>{@html note.content}</div>
+      </article>
+
+      <aside class="toc-sidebar" class:hidden={!hasToc}>
+        <div class="toc-sticky">
+          <h4 class="toc-heading">Contents</h4>
+          <ul class="toc-list" bind:this={tocEl}></ul>
+        </div>
+      </aside>
+    </div>
   {/if}
 </div>
 
 <style>
   .page {
-    max-width: 860px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
   }
 
-  .loading {
-    color: #6b7280;
-    padding: 2rem 0;
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 860px) 17rem;
+    gap: 2.5rem;
   }
+
+  /* ── TOC — copied from theodinproject ── */
+  .toc-sidebar { min-width: 0; }
+  .toc-sidebar.hidden { display: none; }
+
+  .toc-sticky {
+    position: sticky;
+    top: 3rem;
+    padding-bottom: 5rem;
+  }
+
+  .toc-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    padding-bottom: 1rem;
+    margin: 0;
+  }
+
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    color: #6b7280;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-list :global(.toc-item) {
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-left: 2px solid #e5e7eb;
+    font-size: 0.875rem;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+
+  .toc-list :global(.toc-item a) {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .toc-list :global(.toc-item a:hover) { color: #1f2937; }
+
+  .toc-list :global(.toc-item.active) {
+    color: #1f2937;
+    background: #f3f4f6;
+    border-left-color: #a9792b;
+  }
+
+  .skeleton-view { margin-top: 1rem; }
+  .sk-title  { height: 2rem;   width: 55%; margin-bottom: 0.75rem; border-radius: 0.375rem; }
+  .sk-meta   { height: 0.75rem; width: 30%; margin-bottom: 2rem; }
+  .sk-para   { height: 0.875rem; width: 100%; margin-bottom: 0.6rem; }
+  .sk-para.short  { width: 60%; }
+  .sk-para.medium { width: 80%; }
 
   .top-bar {
     display: flex;
@@ -148,45 +311,150 @@
     gap: 0.4rem;
   }
 
-  .content { line-height: 1.75; }
-  .content :global(p) { margin-bottom: 1rem; }
+  /* ── Prose — copied from theodinproject (@tailwindcss/typography defaults + odin overrides) ── */
+  .content { line-height: 1.75; color: #374151; }
+
+  .content :global(p) { margin-top: 1.25em; margin-bottom: 1.25em; }
+  .content :global(p:first-child) { margin-top: 0; }
   .content :global(p:last-child) { margin-bottom: 0; }
-  .content :global(h1) { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.2; }
-  .content :global(h2) { font-size: 1.375rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; line-height: 1.3; }
-  .content :global(h3) { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-  .content :global(ul) { padding-left: 1.5rem; margin-bottom: 1rem; list-style-type: disc; }
-  .content :global(ol) { padding-left: 1.5rem; margin-bottom: 1rem; list-style-type: decimal; }
-  .content :global(li) { margin-bottom: 0.25rem; }
+
+  .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; margin-top: 0; margin-bottom: 0.8888em; color: #111827; }
+  .content :global(h2) { font-size: 1.5em;  font-weight: 700; line-height: 1.3333; margin-top: 2em;  margin-bottom: 1em;    color: #111827; }
+  .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6em; color: #111827; }
+
+  .content :global(strong) { font-weight: 600; color: #111827; }
+
+  .content :global(ul) { list-style-type: disc;    margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
+  .content :global(ol) { list-style-type: decimal; margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
+  .content :global(li) { margin-top: 0.5em; margin-bottom: 0.5em; }
+  .content :global(ul > li::marker) { color: #d1d5db; }
+  .content :global(ol > li::marker) { color: #6b7280; }
+
   .content :global(blockquote) {
-    border-left: 3px solid #4f46e5;
-    padding-left: 1rem;
-    color: #6b7280;
-    font-style: italic;
+    background: #f9fafb;
+    border-left: 4px solid #ce973e;
+    border-radius: 0.125rem;
+    padding: 1rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
   }
+  .content :global(blockquote > *:first-child) { margin-top: 0; }
+  .content :global(blockquote > *:last-child)  { margin-bottom: 0; }
+
+  .content :global(hr) { border: none; border-top: 1px solid #e5e7eb; margin-top: 3em; margin-bottom: 3em; }
+
+  /* Inline code — odin: pink-700, gray-100 bg, normal weight, rounded-md, no backtick pseudo-content */
   .content :global(code) {
-    background: #f3f4f6;
     color: #be185d;
-    padding: 0.25rem;
-    border-radius: 0.375rem;
-    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
     font-size: 0.875em;
     font-weight: 400;
+    background: #f3f4f6;
+    padding: 0.2em 0.4em;
+    border-radius: 0.375rem;
+    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
   }
   .content :global(code::before),
   .content :global(code::after) { content: none; }
+
+  /* Code block — overrides inline code styles above */
   .content :global(pre) {
     background: #1e1e2e;
-    color: #cdd6f4;
+    color: #ccc;
     padding: 1.25rem;
     border-radius: 0.75rem;
     margin-bottom: 1rem;
     overflow-x: auto;
     font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.7;
+    tab-size: 4;
   }
-  .content :global(pre code) { background: none; padding: 0; color: inherit; font-size: inherit; }
-  .content :global(strong) { font-weight: 700; }
-  .content :global(hr) { border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
+  .content :global(pre code) { background: none; padding: 0; padding-top: 3px; color: inherit; font-size: inherit; font-weight: inherit; }
+
+  /* ── Copy button ── */
+  .content :global(.code-toolbar) { position: relative; margin-bottom: 1rem; }
+  .content :global(.code-toolbar > pre) { margin-bottom: 0; }
+  .content :global(.copy-btn) {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: #313244;
+    color: #cdd6f4;
+    border: 1px solid #45475a;
+    border-radius: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .content :global(.code-toolbar:hover .copy-btn) { opacity: 1; }
+  .content :global(.copy-btn:hover) { background: #45475a; }
+
+  /* ── Line numbers ── */
+  .content :global(pre.line-numbers) {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+  }
+  .content :global(pre.line-numbers > code) { position: relative; }
+  .content :global(.line-numbers-rows) {
+    position: absolute;
+    top: 0;
+    left: -3.8em;
+    width: 3em;
+    border-right: 1px solid #45475a;
+    user-select: none;
+    pointer-events: none;
+  }
+  .content :global(.line-numbers-rows > span) {
+    display: block;
+    counter-increment: linenumber;
+    line-height: 1.7rem;
+  }
+  .content :global(.line-numbers-rows > span::before) {
+    content: counter(linenumber);
+    color: #585b70;
+    display: block;
+    padding-right: 0.8em;
+    text-align: right;
+  }
+
+  /* ── Token colours — copied from theodinproject/prism-theme.css ── */
+  .content :global(.token.block-comment),
+  .content :global(.token.cdata),
+  .content :global(.token.comment),
+  .content :global(.token.doctype),
+  .content :global(.token.prolog)                             { color: #999; }
+  .content :global(.token.punctuation)                        { color: #ccc; }
+  .content :global(.token.attr-name),
+  .content :global(.token.deleted),
+  .content :global(.token.namespace),
+  .content :global(.token.tag)                                { color: #e2777a; }
+  .content :global(.token.function-name)                      { color: #6196cc; }
+  .content :global(.token.boolean),
+  .content :global(.token.function),
+  .content :global(.token.number)                             { color: #f08d49; }
+  .content :global(.token.class-name),
+  .content :global(.token.constant),
+  .content :global(.token.property),
+  .content :global(.token.symbol)                             { color: #f8c555; }
+  .content :global(.token.atrule),
+  .content :global(.token.builtin),
+  .content :global(.token.important),
+  .content :global(.token.keyword),
+  .content :global(.token.selector)                           { color: #cc99cd; }
+  .content :global(.token.attr-value),
+  .content :global(.token.char),
+  .content :global(.token.regex),
+  .content :global(.token.string),
+  .content :global(.token.variable)                           { color: #7ec699; }
+  .content :global(.token.entity),
+  .content :global(.token.operator),
+  .content :global(.token.url)                                { color: #67cdcc; }
+  .content :global(.token.bold),
+  .content :global(.token.important)                          { font-weight: 700; }
+  .content :global(.token.italic)                             { font-style: italic; }
+  .content :global(.token.entity)                             { cursor: help; }
+  .content :global(.token.inserted)                           { color: green; }
 </style>

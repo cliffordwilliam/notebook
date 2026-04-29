@@ -3,6 +3,7 @@
   import { credentials } from '../stores/credentials.js';
   import { navigate } from '../stores/router.js';
   import { dbGetNotes, dbDeleteNote, handleError } from '../lib/db.js';
+  import { toasts } from '../stores/toasts.js';
 
   const PER_PAGE = 10;
   let search = '';
@@ -51,6 +52,7 @@
     try {
       await dbDeleteNote(id);
       notes = notes.filter(n => n.id !== id);
+      toasts.add('Note deleted.');
     } catch (e) {
       handleError(e);
     }
@@ -82,7 +84,23 @@
     />
   </div>
 
-  {#if paginated.length === 0}
+  {#if loading}
+    <ul class="note-list">
+      {#each Array(5) as _}
+        <li class="note-card">
+          <div class="sk-body">
+            <div class="skeleton sk-note-title"></div>
+            <div class="skeleton sk-note-preview"></div>
+            <div class="skeleton sk-note-date"></div>
+          </div>
+          <div class="note-actions">
+            <div class="skeleton sk-btn"></div>
+            <div class="skeleton sk-btn"></div>
+          </div>
+        </li>
+      {/each}
+    </ul>
+  {:else if paginated.length === 0}
     <div class="empty">
       {#if search.trim()}
         No notes match &ldquo;{search}&rdquo;
@@ -163,6 +181,12 @@
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
   }
+
+  .sk-body         { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.875rem 1rem; }
+  .sk-note-title   { height: 0.875rem; width: 55%; }
+  .sk-note-preview { height: 0.75rem;  width: 82%; }
+  .sk-note-date    { height: 0.65rem;  width: 25%; }
+  .sk-btn          { height: 1.6rem; width: 2.25rem; border-radius: 0.25rem; }
 
   .empty {
     text-align: center;

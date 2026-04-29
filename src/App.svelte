@@ -9,11 +9,14 @@
   import NoteEdit from './pages/NoteEdit.svelte';
   import NoteView from './pages/NoteView.svelte';
   import ErrorPage from './pages/ErrorPage.svelte';
+  import Toast from './components/Toast.svelte';
 
   onMount(() => {
     if (get(credentials)) navigate('list');
   });
 </script>
+
+<Toast />
 
 {#if $route.page === 'login'}
   <Login />

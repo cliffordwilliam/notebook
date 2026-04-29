@@ -10,11 +10,15 @@ A browser-based rich text note taking app. The only dependency is Docker.
 
 Builds the app inside Docker via `compose.yaml`, serves it on `http://localhost:8080`, and opens your browser. Press Ctrl+C to stop — the container and locally built image are removed automatically.
 
-## Editor features
+## Features
 
 - Bold, headings (H2–H3), bullet and numbered lists, blockquotes, code blocks
-- C++ syntax highlighting in code blocks (Catppuccin Mocha theme)
+- Language selector dropdown in the toolbar when a code block is active (C, C++, JavaScript, TypeScript, Python, Bash, CSS, HTML, JSON, SQL)
+- Syntax highlighting in the note view (Prism.js, odin theme) with line numbers and a copy button on every code block
 - Sticky toolbar — stays visible when writing long notes
+- Table of contents in the note view — built from H2 headings, active heading tracks scroll position
+- Toast notifications on create, save, and delete; error toasts for unexpected failures
+- Skeleton loading on the note list, note view, and note edit screens
 - Full-text search across title and content on the notes list
 - Pagination (10 notes per page)
 
@@ -88,9 +92,9 @@ scripts/
 src/
   lib/db.js       — all database operations (NeonDB HTTP via @neondatabase/serverless)
   lib/errors.js   — AuthError and SchemaError
-  stores/         — credentials (localStorage), router
+  stores/         — credentials (localStorage), router, toasts
   pages/          — Login, NoteList, NoteCreate, NoteEdit, NoteView, ErrorPage
-  components/     — Editor (TipTap + CodeBlockLowlight)
+  components/     — Editor (TipTap), Toast
 compose.yaml      — provisions the nginx container, exposes :8080
 Dockerfile        — two-stage build: bun build → nginx image
 .env              — your connection string (git-ignored)

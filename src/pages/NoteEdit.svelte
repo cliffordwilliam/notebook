@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { navigate } from '../stores/router.js';
   import { dbGetNote, dbUpdateNote, handleError } from '../lib/db.js';
+  import { toasts } from '../stores/toasts.js';
   import Editor from '../components/Editor.svelte';
 
   export let id;
@@ -33,6 +34,7 @@
     saving = true;
     try {
       await dbUpdateNote(id, title.trim(), content);
+      toasts.add('Note saved.');
       navigate('view', { id });
     } catch (e) {
       handleError(e);
@@ -49,7 +51,12 @@
   </div>
 
   {#if loading}
-    <p class="loading">Loading...</p>
+    <div class="skeleton-form">
+      <div class="skeleton sk-label"></div>
+      <div class="skeleton sk-input"></div>
+      <div class="skeleton sk-label" style="margin-top:1.25rem"></div>
+      <div class="skeleton sk-editor"></div>
+    </div>
   {:else if note}
     <form on:submit|preventDefault={save}>
       <div class="field">
@@ -117,10 +124,9 @@
 
   .btn-back:hover { color: #111827; }
 
-  .loading {
-    color: #6b7280;
-    padding: 2rem 0;
-  }
+  .sk-label  { height: 0.75rem; width: 3rem; margin-bottom: 0.375rem; }
+  .sk-input  { height: 2.625rem; width: 100%; margin-bottom: 0; border-radius: 0.375rem; }
+  .sk-editor { height: 16rem; width: 100%; border-radius: 0.5rem; }
 
   .field {
     margin-bottom: 1.25rem;

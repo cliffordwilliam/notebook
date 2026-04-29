@@ -3,12 +3,19 @@
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
   import Placeholder from '@tiptap/extension-placeholder';
-  import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-  import { createLowlight } from 'lowlight';
-  import cpp from 'highlight.js/lib/languages/cpp';
 
-  const lowlight = createLowlight();
-  lowlight.register('cpp', cpp);
+  const LANGUAGES = [
+    { value: 'cpp',        label: 'C++' },
+    { value: 'c',          label: 'C' },
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'typescript', label: 'TypeScript' },
+    { value: 'python',     label: 'Python' },
+    { value: 'bash',       label: 'Bash' },
+    { value: 'css',        label: 'CSS' },
+    { value: 'markup',     label: 'HTML' },
+    { value: 'json',       label: 'JSON' },
+    { value: 'sql',        label: 'SQL' },
+  ];
 
   export let content = '';
   export let readonly = false;
@@ -22,9 +29,8 @@
     editor = new Editor({
       element,
       extensions: [
-        StarterKit.configure({ italic: false, strike: false, codeBlock: false, heading: { levels: [2, 3] } }),
+        StarterKit.configure({ italic: false, strike: false, heading: { levels: [2, 3] } }),
         Placeholder.configure({ placeholder }),
-        CodeBlockLowlight.configure({ lowlight }),
       ],
       content,
       editable: !readonly,
@@ -53,6 +59,17 @@
       <div class="sep"></div>
       <button type="button" on:click={() => editor.chain().focus().toggleBlockquote().run()} class:active={editor.isActive('blockquote')} title="Blockquote">"</button>
       <button type="button" on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')} title="Code block">&lt;/&gt;</button>
+      {#if editor.isActive('codeBlock')}
+        <select
+          title="Language"
+          value={editor.getAttributes('codeBlock').language ?? 'cpp'}
+          on:change={e => editor.chain().focus().updateAttributes('codeBlock', { language: e.target.value }).run()}
+        >
+          {#each LANGUAGES as lang}
+            <option value={lang.value}>{lang.label}</option>
+          {/each}
+        </select>
+      {/if}
       <div class="sep"></div>
       <button type="button" on:click={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Undo">&#8617;</button>
       <button type="button" on:click={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Redo">&#8618;</button>
@@ -112,6 +129,18 @@
     cursor: default;
   }
 
+  .toolbar select {
+    padding: 0.2rem 0.375rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    background: #fff;
+    font-size: 0.8125rem;
+    color: #374151;
+    cursor: pointer;
+  }
+
+  .toolbar select:focus { outline: none; border-color: #a5b4fc; }
+
   .sep {
     width: 1px;
     height: 1.25rem;
@@ -142,11 +171,11 @@
   :global(.ProseMirror ol) { padding-left: 1.5rem; margin-bottom: 1rem; list-style-type: decimal; }
   :global(.ProseMirror li) { margin-bottom: 0.25rem; }
   :global(.ProseMirror blockquote) {
-    border-left: 3px solid #4f46e5;
-    padding-left: 1rem;
-    color: #6b7280;
+    background: #f9fafb;
+    border-left: 4px solid #ce973e;
+    border-radius: 0.125rem;
+    padding: 1rem;
     margin-bottom: 1rem;
-    font-style: italic;
   }
   :global(.ProseMirror code) {
     background: #f3f4f6;

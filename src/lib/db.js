@@ -3,6 +3,7 @@ import { get } from 'svelte/store';
 import { credentials } from '../stores/credentials.js';
 import { AuthError, SchemaError } from './errors.js';
 import { navigate } from '../stores/router.js';
+import { toasts } from '../stores/toasts.js';
 
 export function handleError(error) {
   if (error instanceof AuthError) {
@@ -11,7 +12,7 @@ export function handleError(error) {
   } else if (error instanceof SchemaError) {
     navigate('error', { message: error.message });
   } else {
-    throw error;
+    toasts.add(error.message || 'Something went wrong.', 'error');
   }
 }
 

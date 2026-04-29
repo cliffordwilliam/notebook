@@ -1,6 +1,7 @@
 <script>
   import { navigate } from '../stores/router.js';
   import { dbCreateNote, handleError } from '../lib/db.js';
+  import { toasts } from '../stores/toasts.js';
   import Editor from '../components/Editor.svelte';
 
   let title = '';
@@ -16,6 +17,7 @@
     saving = true;
     try {
       await dbCreateNote(title.trim(), content);
+      toasts.add('Note created.');
       navigate('list');
     } catch (e) {
       handleError(e);
