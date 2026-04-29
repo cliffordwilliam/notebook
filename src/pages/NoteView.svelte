@@ -181,20 +181,27 @@
 
 <style>
   .page {
-    max-width: 1280px;
+    max-width: 1536px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 3.5rem 2rem;
   }
 
   .layout {
     display: grid;
-    grid-template-columns: minmax(0, 65ch) 17rem;
-    gap: 2.5rem;
-    justify-content: center;
+    grid-template-columns: 1fr minmax(0, 65ch) 1fr;
+    column-gap: 2.5rem;
+  }
+
+  article {
+    grid-column: 2;
   }
 
   /* ── TOC — copied from theodinproject ── */
-  .toc-sidebar { min-width: 0; }
+  .toc-sidebar {
+    grid-column: 3;
+    width: 18rem;
+    justify-self: start;
+  }
   .toc-sidebar.hidden { display: none; }
 
   .toc-sticky {
@@ -313,7 +320,7 @@
   }
 
   /* ── Prose — copied from theodinproject (@tailwindcss/typography defaults + odin overrides) ── */
-  .content { line-height: 1.75; color: #374151; }
+  .content { line-height: 1.75; color: #374151; font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 
   .content :global(p) { margin-top: 1.25em; margin-bottom: 1.25em; }
   .content :global(p:first-child) { margin-top: 0; }
@@ -321,7 +328,12 @@
 
   .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; margin-top: 0; margin-bottom: 0.8888em; color: #111827; }
   .content :global(h2) { font-size: 1.5em;  font-weight: 700; line-height: 1.3333; margin-top: 2em;  margin-bottom: 1em;    color: #111827; }
-  .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6em; color: #111827; }
+  .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6666667em; color: #111827; }
+
+  .content :global(h1 + *),
+  .content :global(h2 + *),
+  .content :global(h3 + *),
+  .content :global(h4 + *) { margin-top: 0; }
 
   .content :global(strong) { font-weight: 600; color: #111827; }
 
