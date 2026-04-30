@@ -6,20 +6,13 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    container:
+      image: postgres:17-alpine
     steps:
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get install -y curl ca-certificates
-          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
-            gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/postgresql.gpg > /dev/null
-          echo "deb https://apt.postgresql.org/pub/repos/apt noble-pgdg main" | \
-            sudo tee /etc/apt/sources.list.d/pgdg.list
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
-
       - name: Configure AWS CLI for B2
         run: |
-          pip install awscli
+          apk add --no-cache python3 py3-pip
+          pip install awscli --break-system-packages
           aws configure set aws_access_key_id ${{ secrets.B2_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.B2_APPLICATION_KEY }}
 
