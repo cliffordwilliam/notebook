@@ -3,6 +3,7 @@
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
   import Placeholder from '@tiptap/extension-placeholder';
+  import Link from '@tiptap/extension-link';
 
   const LANGUAGES = [
     { value: 'cpp',        label: 'C++' },
@@ -32,6 +33,7 @@
       extensions: [
         StarterKit.configure({ italic: false, strike: false, heading: { levels: [2, 3] } }),
         Placeholder.configure({ placeholder }),
+        Link.configure({ openOnClick: false, rel: 'noopener noreferrer' }),
       ],
       content,
       editable: !readonly,
@@ -44,6 +46,15 @@
     });
   });
 
+  function handleLink() {
+    if (editor.isActive('link')) {
+      editor.chain().focus().unsetLink().run();
+    } else {
+      const url = window.prompt('URL');
+      if (url) editor.chain().focus().setLink({ href: url }).run();
+    }
+  }
+
   onDestroy(() => editor?.destroy());
 </script>
 
@@ -51,6 +62,7 @@
   {#if !readonly && editor}
     <div class="toolbar">
       <button type="button" on:click={() => editor.chain().focus().toggleBold().run()} class:active={editor.isActive('bold')} title="Bold"><strong>B</strong></button>
+      <button type="button" on:click={handleLink} class:active={editor.isActive('link')} title="Link">URL</button>
       <div class="sep"></div>
       <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} class:active={editor.isActive('heading', { level: 2 })}>H2</button>
       <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} class:active={editor.isActive('heading', { level: 3 })}>H3</button>
@@ -201,6 +213,8 @@
     line-height: 1.7;
   }
   :global(.ProseMirror pre code) { background: none; padding: 0; color: inherit; font-size: inherit; }
+  :global(.ProseMirror a) { color: #1e40af; text-decoration: underline; cursor: pointer; }
+  :global(.ProseMirror a:hover) { text-decoration: none; }
   :global(.ProseMirror strong) { font-weight: 700; }
   :global(.ProseMirror hr) { border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0; }
   :global(.ProseMirror p.is-editor-empty:first-child::before) {

@@ -338,6 +338,10 @@
 
   .content :global(strong) { font-weight: 600; color: #111827; }
 
+  .content :global(a) { color: #1e40af; text-decoration: underline; }
+  .content :global(a:visited) { color: #6b21a8; }
+  .content :global(a:hover) { text-decoration: none; }
+
   .content :global(ul) { list-style-type: disc;    margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
   .content :global(ol) { list-style-type: decimal; margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
   .content :global(li) { margin-top: 0.5em; margin-bottom: 0.5em; }
