@@ -17,6 +17,8 @@
     { value: 'json',       label: 'JSON' },
     { value: 'sql',        label: 'SQL' },
     { value: 'yaml',       label: 'YAML' },
+    { value: 'kotlin',     label: 'Kotlin / KTS' },
+    { value: 'xml',        label: 'XML' },
   ];
 
   export let content = '';
