@@ -17,6 +17,7 @@
   import 'prismjs/components/prism-sql';
   import 'prismjs/components/prism-yaml';
   import 'prismjs/components/prism-kotlin';
+  import 'prismjs/components/prism-cmake';
 
   export let id;
 

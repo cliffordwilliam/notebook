@@ -19,6 +19,7 @@
     { value: 'yaml',       label: 'YAML' },
     { value: 'kotlin',     label: 'Kotlin / KTS' },
     { value: 'xml',        label: 'XML' },
+    { value: 'cmake',      label: 'CMake' },
   ];
 
   export let content = '';
