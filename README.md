@@ -8,7 +8,21 @@ A browser-based rich text note taking app. The only dependency is Docker.
 ./scripts/build.sh
 ```
 
-Builds the app inside Docker via `compose.yaml`, serves it on `http://localhost:8080`, and opens your browser. Press Ctrl+C to stop — the container and locally built image are removed automatically.
+Picks a free port automatically, builds the app inside Docker via `compose.yaml`, waits until the server is ready, then opens your browser. Press Ctrl+C to stop — the container and locally built image are removed automatically.
+
+### Run from anywhere
+
+`build.sh` resolves its own location via `BASH_SOURCE`, so it works regardless of your current directory. Symlink it into a directory on your `PATH` and you can launch it from anywhere:
+
+```bash
+ln -s /path/to/notebook/scripts/build.sh ~/.local/bin/notebook
+```
+
+Then just:
+
+```bash
+notebook
+```
 
 ## Editor keyboard shortcuts
 
