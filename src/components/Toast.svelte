@@ -36,16 +36,16 @@
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    background: var(--color-surface);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border-left: 4px solid;
     font-size: 0.875rem;
     min-width: 220px;
     max-width: 360px;
   }
 
-  .toast-success { border-left-color: #10b981; color: #065f46; }
-  .toast-error   { border-left-color: #ef4444; color: #7f1d1d; }
+  .toast-success { border-left-color: var(--color-success); color: var(--color-success); }
+  .toast-error   { border-left-color: var(--color-danger); color: var(--color-danger); }
 
   .toast button {
     background: none;

@@ -156,7 +156,7 @@
   h1 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
   }
 
   .header-right {
@@ -172,18 +172,18 @@
   .search-row input {
     width: 100%;
     padding: 0.625rem 0.875rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     font-size: 0.9375rem;
-    color: #111827;
-    background: #fff;
+    color: var(--color-text);
+    background: var(--color-bg);
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   .search-row input:focus {
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-shadow);
   }
 
   .sk-body         { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.875rem 1rem; }
@@ -194,7 +194,7 @@
 
   .empty {
     text-align: center;
-    color: #6b7280;
+    color: var(--color-text-dim);
     padding: 4rem 1rem;
     font-size: 1rem;
   }
@@ -207,8 +207,8 @@
   }
 
   .note-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
@@ -217,8 +217,8 @@
   }
 
   .note-card:hover {
-    border-color: #c4b5fd;
-    box-shadow: 0 1px 4px rgba(79, 70, 229, 0.08);
+    border-color: var(--color-accent);
+    box-shadow: 0 1px 4px var(--color-accent-shadow);
   }
 
   .note-body {
@@ -238,7 +238,7 @@
   .note-title {
     font-size: 0.9375rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--color-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -247,7 +247,7 @@
 
   .note-preview {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--color-text-dim);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -256,7 +256,7 @@
 
   .note-date {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: var(--color-text-faint);
   }
 
   .note-actions {
@@ -268,8 +268,8 @@
 
   .btn-primary {
     padding: 0.5rem 1rem;
-    background: #4f46e5;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
     border: none;
     border-radius: 0.375rem;
     font-size: 0.875rem;
@@ -279,34 +279,34 @@
     white-space: nowrap;
   }
 
-  .btn-primary:hover { background: #4338ca; }
+  .btn-primary:hover { background: var(--color-accent-hover); }
 
   .btn-ghost {
     padding: 0.5rem 0.75rem;
     background: none;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--color-text-dim);
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .btn-ghost:hover { background: #f3f4f6; }
+  .btn-ghost:hover { background: var(--color-surface-hover); }
 
   .btn-action {
     padding: 0.3rem 0.6rem;
     background: none;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--color-text-dim);
     cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
 
-  .btn-action:hover { background: #f3f4f6; color: #374151; }
-  .btn-action.danger:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+  .btn-action:hover { background: var(--color-surface-hover); color: var(--color-text-muted); }
+  .btn-action.danger:hover { background: var(--color-danger-soft); color: var(--color-danger); border-color: var(--color-danger-border); }
 
   .pagination {
     display: flex;
@@ -315,20 +315,20 @@
     gap: 1rem;
     margin-top: 1.5rem;
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--color-text-muted);
   }
 
   .pagination button {
     padding: 0.375rem 0.875rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
-    background: #fff;
+    background: var(--color-surface);
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: background 0.15s;
   }
 
   .pagination button:disabled { opacity: 0.4; cursor: default; }
-  .pagination button:not(:disabled):hover { background: #f3f4f6; }
+  .pagination button:not(:disabled):hover { background: var(--color-surface-hover); }
 </style>

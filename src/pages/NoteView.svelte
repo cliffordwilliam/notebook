@@ -216,7 +216,7 @@
   .toc-heading {
     font-size: 1rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--color-text-muted);
     padding-bottom: 1rem;
     margin: 0;
   }
@@ -225,14 +225,14 @@
     display: flex;
     flex-direction: column;
     list-style: none;
-    color: #6b7280;
+    color: var(--color-text-dim);
     margin: 0;
     padding: 0;
   }
 
   .toc-list :global(.toc-item) {
     padding: 0.5rem 0.5rem 0.5rem 1rem;
-    border-left: 2px solid #e5e7eb;
+    border-left: 2px solid var(--color-border);
     font-size: 0.875rem;
     transition: border-color 0.15s, background 0.15s, color 0.15s;
   }
@@ -242,11 +242,11 @@
     color: inherit;
   }
 
-  .toc-list :global(.toc-item a:hover) { color: #1f2937; }
+  .toc-list :global(.toc-item a:hover) { color: var(--color-text); }
 
   .toc-list :global(.toc-item.active) {
-    color: #1f2937;
-    background: #f3f4f6;
+    color: var(--color-text);
+    background: var(--color-surface-hover);
     border-left-color: #a9792b;
   }
 
@@ -267,13 +267,13 @@
   .btn-back {
     background: none;
     border: none;
-    color: #6b7280;
+    color: var(--color-text-dim);
     cursor: pointer;
     font-size: 0.9375rem;
     padding: 0;
   }
 
-  .btn-back:hover { color: #111827; }
+  .btn-back:hover { color: var(--color-text); }
 
   .actions {
     display: flex;
@@ -283,75 +283,75 @@
   .btn-edit {
     padding: 0.5rem 1rem;
     background: none;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .btn-edit:hover { background: #f3f4f6; }
+  .btn-edit:hover { background: var(--color-surface-hover); }
 
   .btn-danger {
     padding: 0.5rem 1rem;
     background: none;
-    border: 1px solid #fca5a5;
+    border: 1px solid var(--color-danger-border);
     border-radius: 0.375rem;
     font-size: 0.875rem;
-    color: #ef4444;
+    color: var(--color-danger);
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .btn-danger:hover { background: #fee2e2; }
+  .btn-danger:hover { background: var(--color-danger-soft); }
 
   article h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
     line-height: 1.25;
     margin-bottom: 0.5rem;
   }
 
   .meta {
     font-size: 0.8125rem;
-    color: #9ca3af;
+    color: var(--color-text-faint);
     margin-bottom: 2rem;
     display: flex;
     gap: 0.4rem;
   }
 
   /* ── Prose — copied from theodinproject (@tailwindcss/typography defaults + odin overrides) ── */
-  .content { line-height: 1.75; color: #374151; font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .content { line-height: 1.75; color: var(--color-text-muted); font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 
   .content :global(p) { margin-top: 1.25em; margin-bottom: 1.25em; }
   .content :global(p:first-child) { margin-top: 0; }
   .content :global(p:last-child) { margin-bottom: 0; }
 
-  .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; margin-top: 0; margin-bottom: 0.8888em; color: #111827; }
-  .content :global(h2) { font-size: 1.5em;  font-weight: 700; line-height: 1.3333; margin-top: 2em;  margin-bottom: 1em;    color: #111827; }
-  .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6666667em; color: #111827; }
+  .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; margin-top: 0; margin-bottom: 0.8888em; color: var(--color-text); }
+  .content :global(h2) { font-size: 1.5em;  font-weight: 700; line-height: 1.3333; margin-top: 2em;  margin-bottom: 1em;    color: var(--color-text); }
+  .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6666667em; color: var(--color-text); }
 
   .content :global(h1 + *),
   .content :global(h2 + *),
   .content :global(h3 + *),
   .content :global(h4 + *) { margin-top: 0; }
 
-  .content :global(strong) { font-weight: 600; color: #111827; }
+  .content :global(strong) { font-weight: 600; color: var(--color-text); }
 
-  .content :global(a) { color: #1e40af; text-decoration: underline; }
-  .content :global(a:visited) { color: #6b21a8; }
+  .content :global(a) { color: #89b4fa; text-decoration: underline; }
+  .content :global(a:visited) { color: var(--color-accent); }
   .content :global(a:hover) { text-decoration: none; }
 
   .content :global(ul) { list-style-type: disc;    margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
   .content :global(ol) { list-style-type: decimal; margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
   .content :global(li) { margin-top: 0.5em; margin-bottom: 0.5em; }
-  .content :global(ul > li::marker) { color: #d1d5db; }
-  .content :global(ol > li::marker) { color: #6b7280; }
+  .content :global(ul > li::marker) { color: var(--color-border); }
+  .content :global(ol > li::marker) { color: var(--color-text-dim); }
 
   .content :global(blockquote) {
-    background: #f9fafb;
+    background: var(--color-bg);
     border-left: 4px solid #ce973e;
     border-radius: 0.125rem;
     padding: 1rem;
@@ -361,14 +361,14 @@
   .content :global(blockquote > *:first-child) { margin-top: 0; }
   .content :global(blockquote > *:last-child)  { margin-bottom: 0; }
 
-  .content :global(hr) { border: none; border-top: 1px solid #e5e7eb; margin-top: 3em; margin-bottom: 3em; }
+  .content :global(hr) { border: none; border-top: 1px solid var(--color-border); margin-top: 3em; margin-bottom: 3em; }
 
   /* Inline code — odin: pink-700, gray-100 bg, normal weight, rounded-md, no backtick pseudo-content */
   .content :global(code) {
-    color: #be185d;
+    color: #f5c2e7;
     font-size: 0.875em;
     font-weight: 400;
-    background: #f3f4f6;
+    background: var(--color-surface);
     padding: 0.2em 0.4em;
     border-radius: 0.375rem;
     font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
@@ -378,8 +378,8 @@
 
   /* Code block — overrides inline code styles above */
   .content :global(pre) {
-    background: #1e1e2e;
-    color: #ccc;
+    background: var(--color-bg);
+    color: var(--color-text);
     padding: 1.25rem;
     border-radius: 0.75rem;
     margin-bottom: 1rem;
@@ -398,9 +398,9 @@
     position: absolute;
     top: 0.6rem;
     right: 0.6rem;
-    background: #313244;
-    color: #cdd6f4;
-    border: 1px solid #45475a;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
     border-radius: 0.3rem;
     padding: 0.2rem 0.55rem;
     font-size: 0.75rem;
@@ -409,7 +409,7 @@
     transition: opacity 0.15s;
   }
   .content :global(.code-toolbar:hover .copy-btn) { opacity: 1; }
-  .content :global(.copy-btn:hover) { background: #45475a; }
+  .content :global(.copy-btn:hover) { background: var(--color-surface-hover); }
 
   /* ── Line numbers ── */
   .content :global(pre.line-numbers) {
@@ -423,7 +423,7 @@
     top: 0;
     left: -3.8em;
     width: 3em;
-    border-right: 1px solid #45475a;
+    border-right: 1px solid var(--color-border);
     user-select: none;
     pointer-events: none;
   }
@@ -434,7 +434,7 @@
   }
   .content :global(.line-numbers-rows > span::before) {
     content: counter(linenumber);
-    color: #585b70;
+    color: var(--color-text-faint);
     display: block;
     padding-right: 0.8em;
     text-align: right;

@@ -29,20 +29,20 @@
   .card {
     width: 100%;
     max-width: 440px;
-    background: #fff;
-    border: 1px solid #fca5a5;
+    background: var(--color-surface);
+    border: 1px solid var(--color-danger-border);
     border-radius: 0.75rem;
     padding: 2.5rem 2rem;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .icon {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background: #fee2e2;
-    color: #ef4444;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
     font-size: 1.5rem;
     font-weight: 700;
     display: flex;
@@ -54,16 +54,16 @@
   h1 {
     font-size: 1.375rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
     margin-bottom: 0.75rem;
   }
 
   .message {
     font-size: 0.875rem;
-    color: #ef4444;
+    color: var(--color-danger);
     margin-bottom: 1rem;
     font-family: 'SFMono-Regular', Consolas, monospace;
-    background: #fee2e2;
+    background: var(--color-danger-soft);
     padding: 0.625rem 0.75rem;
     border-radius: 0.375rem;
     word-break: break-all;
@@ -72,15 +72,15 @@
 
   .hint {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--color-text-dim);
     margin-bottom: 1.75rem;
     line-height: 1.5;
   }
 
   .btn-primary {
     padding: 0.625rem 1.5rem;
-    background: #4f46e5;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
     border: none;
     border-radius: 0.375rem;
     font-size: 0.9375rem;
@@ -89,5 +89,5 @@
     transition: background 0.15s;
   }
 
-  .btn-primary:hover { background: #4338ca; }
+  .btn-primary:hover { background: var(--color-accent-hover); }
 </style>

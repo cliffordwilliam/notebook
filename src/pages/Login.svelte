@@ -55,23 +55,23 @@
   .card {
     width: 100%;
     max-width: 420px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     padding: 2.5rem 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   h1 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
     text-align: center;
     margin-bottom: 0.5rem;
   }
 
   .subtitle {
-    color: #6b7280;
+    color: var(--color-text-dim);
     text-align: center;
     font-size: 0.9375rem;
     margin-bottom: 1.75rem;
@@ -81,29 +81,30 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--color-text-muted);
     margin-bottom: 0.375rem;
   }
 
   input {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 0.875rem;
-    color: #111827;
+    color: var(--color-text);
+    background: var(--color-bg);
     font-family: 'SFMono-Regular', Consolas, monospace;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   input:focus {
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-shadow);
   }
 
   .field-error {
-    color: #ef4444;
+    color: var(--color-danger);
     font-size: 0.8125rem;
     margin-top: 0.375rem;
   }
@@ -113,8 +114,8 @@
     width: 100%;
     padding: 0.625rem;
     margin-top: 1rem;
-    background: #4f46e5;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
     border: none;
     border-radius: 0.375rem;
     font-size: 0.9375rem;
@@ -123,5 +124,5 @@
     transition: background 0.15s;
   }
 
-  .btn-primary:hover { background: #4338ca; }
+  .btn-primary:hover { background: var(--color-accent-hover); }
 </style>

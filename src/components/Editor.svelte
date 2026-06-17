@@ -75,6 +75,7 @@
       <div class="sep"></div>
       <button type="button" on:click={() => editor.chain().focus().toggleBlockquote().run()} class:active={editor.isActive('blockquote')} title="Blockquote">"</button>
       <button type="button" on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')} title="Code block">&lt;/&gt;</button>
+      <button type="button" on:click={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule">&#8213;</button>
       {#if editor.isActive('codeBlock')}
         <select
           title="Language"
@@ -96,9 +97,9 @@
 
 <style>
   .editor-wrap {
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
-    background: #fff;
+    background: var(--color-surface);
   }
 
   .editor-wrap.readonly {
@@ -115,9 +116,9 @@
     align-items: center;
     gap: 2px;
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-border);
     border-radius: 0.5rem 0.5rem 0 0;
-    background: #f9fafb;
+    background: var(--color-bg);
   }
 
   .toolbar button {
@@ -128,16 +129,16 @@
     background: none;
     cursor: pointer;
     font-size: 0.8125rem;
-    color: #374151;
+    color: var(--color-text-muted);
     line-height: 1.4;
   }
 
-  .toolbar button:hover:not(:disabled) { background: #e5e7eb; }
+  .toolbar button:hover:not(:disabled) { background: var(--color-surface-hover); }
 
   .toolbar button.active {
-    background: #ede9fe;
-    color: #4f46e5;
-    border-color: #c4b5fd;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
   }
 
   .toolbar button:disabled {
@@ -147,20 +148,20 @@
 
   .toolbar select {
     padding: 0.2rem 0.375rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.25rem;
-    background: #fff;
+    background: var(--color-surface);
     font-size: 0.8125rem;
-    color: #374151;
+    color: var(--color-text-muted);
     cursor: pointer;
   }
 
-  .toolbar select:focus { outline: none; border-color: #a5b4fc; }
+  .toolbar select:focus { outline: none; border-color: var(--color-accent); }
 
   .sep {
     width: 1px;
     height: 1.25rem;
-    background: #d1d5db;
+    background: var(--color-border);
     margin: 0 0.25rem;
     flex-shrink: 0;
   }
@@ -187,15 +188,15 @@
   :global(.ProseMirror ol) { padding-left: 1.5rem; margin-bottom: 1rem; list-style-type: decimal; }
   :global(.ProseMirror li) { margin-bottom: 0.25rem; }
   :global(.ProseMirror blockquote) {
-    background: #f9fafb;
+    background: var(--color-bg);
     border-left: 4px solid #ce973e;
     border-radius: 0.125rem;
     padding: 1rem;
     margin-bottom: 1rem;
   }
   :global(.ProseMirror code) {
-    background: #f3f4f6;
-    color: #be185d;
+    background: var(--color-surface);
+    color: #f5c2e7;
     padding: 0.25rem;
     border-radius: 0.375rem;
     font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
@@ -205,8 +206,8 @@
   :global(.ProseMirror code::before),
   :global(.ProseMirror code::after) { content: none; }
   :global(.ProseMirror pre) {
-    background: #1e1e2e;
-    color: #cdd6f4;
+    background: var(--color-bg);
+    color: var(--color-text);
     padding: 1.25rem;
     border-radius: 0.75rem;
     margin-bottom: 1rem;
@@ -216,13 +217,13 @@
     line-height: 1.7;
   }
   :global(.ProseMirror pre code) { background: none; padding: 0; color: inherit; font-size: inherit; }
-  :global(.ProseMirror a) { color: #1e40af; text-decoration: underline; cursor: pointer; }
+  :global(.ProseMirror a) { color: #89b4fa; text-decoration: underline; cursor: pointer; }
   :global(.ProseMirror a:hover) { text-decoration: none; }
   :global(.ProseMirror strong) { font-weight: 700; }
-  :global(.ProseMirror hr) { border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0; }
+  :global(.ProseMirror hr) { border: none; border-top: 1px solid var(--color-border); margin: 1rem 0; }
   :global(.ProseMirror p.is-editor-empty:first-child::before) {
     content: attr(data-placeholder);
-    color: #9ca3af;
+    color: var(--color-text-faint);
     pointer-events: none;
     float: left;
     height: 0;

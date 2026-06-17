@@ -80,19 +80,19 @@
   h1 {
     font-size: 1.375rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
   }
 
   .btn-back {
     background: none;
     border: none;
-    color: #6b7280;
+    color: var(--color-text-dim);
     cursor: pointer;
     font-size: 0.9375rem;
     padding: 0;
   }
 
-  .btn-back:hover { color: #111827; }
+  .btn-back:hover { color: var(--color-text); }
 
   .field {
     margin-bottom: 1.25rem;
@@ -102,29 +102,29 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--color-text-muted);
     margin-bottom: 0.375rem;
   }
 
   input[type='text'] {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 1.0625rem;
-    color: #111827;
-    background: #fff;
+    color: var(--color-text);
+    background: var(--color-bg);
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   input[type='text']:focus {
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-shadow);
   }
 
   .field-error {
-    color: #ef4444;
+    color: var(--color-danger);
     font-size: 0.8125rem;
     margin-top: 0.375rem;
   }
@@ -138,8 +138,8 @@
 
   .btn-primary {
     padding: 0.625rem 1.5rem;
-    background: #4f46e5;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
     border: none;
     border-radius: 0.375rem;
     font-size: 0.9375rem;
@@ -148,19 +148,19 @@
     transition: background 0.15s;
   }
 
-  .btn-primary:hover:not(:disabled) { background: #4338ca; }
+  .btn-primary:hover:not(:disabled) { background: var(--color-accent-hover); }
   .btn-primary:disabled { opacity: 0.6; cursor: default; }
 
   .btn-secondary {
     padding: 0.625rem 1.25rem;
-    background: #fff;
-    border: 1px solid #d1d5db;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 0.9375rem;
-    color: #374151;
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .btn-secondary:hover { background: #f3f4f6; }
+  .btn-secondary:hover { background: var(--color-surface-hover); }
 </style>
