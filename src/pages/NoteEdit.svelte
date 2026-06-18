@@ -3,6 +3,7 @@
   import { navigate } from '../stores/router.js';
   import { dbGetNote, dbUpdateNote, handleError } from '../lib/db.js';
   import { toasts } from '../stores/toasts.js';
+  import { ArrowLeft } from 'lucide-svelte';
   import Editor from '../components/Editor.svelte';
 
   export let id;
@@ -46,7 +47,7 @@
 
 <div class="page">
   <div class="top-bar">
-    <button class="btn-back" on:click={() => navigate('view', { id })}>&#8592; Back</button>
+    <button class="btn-back" on:click={() => navigate('view', { id })}><ArrowLeft size={16} /> Back</button>
     <h1>Edit Note</h1>
   </div>
 
@@ -95,7 +96,7 @@
 
 <style>
   .page {
-    max-width: 1280px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
   }
@@ -114,6 +115,9 @@
   }
 
   .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
     background: none;
     border: none;
     color: var(--color-text-dim);

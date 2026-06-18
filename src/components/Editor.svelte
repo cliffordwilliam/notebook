@@ -4,6 +4,19 @@
   import StarterKit from '@tiptap/starter-kit';
   import Placeholder from '@tiptap/extension-placeholder';
   import Link from '@tiptap/extension-link';
+  import {
+    Bold as BoldIcon,
+    Link as LinkIcon,
+    Heading2,
+    Heading3,
+    List,
+    ListOrdered,
+    Quote,
+    Code as CodeIcon,
+    Minus,
+    Undo2,
+    Redo2,
+  } from 'lucide-svelte';
 
   const LANGUAGES = [
     { value: 'cpp',        label: 'C++' },
@@ -64,18 +77,18 @@
 <div class="editor-wrap" class:readonly>
   {#if !readonly && editor}
     <div class="toolbar">
-      <button type="button" on:click={() => editor.chain().focus().toggleBold().run()} class:active={editor.isActive('bold')} title="Bold"><strong>B</strong></button>
-      <button type="button" on:click={handleLink} class:active={editor.isActive('link')} title="Link">URL</button>
+      <button type="button" on:click={() => editor.chain().focus().toggleBold().run()} class:active={editor.isActive('bold')} title="Bold"><BoldIcon size={16} /></button>
+      <button type="button" on:click={handleLink} class:active={editor.isActive('link')} title="Link"><LinkIcon size={16} /></button>
       <div class="sep"></div>
-      <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} class:active={editor.isActive('heading', { level: 2 })}>H2</button>
-      <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} class:active={editor.isActive('heading', { level: 3 })}>H3</button>
+      <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} class:active={editor.isActive('heading', { level: 2 })} title="Heading 2"><Heading2 size={16} /></button>
+      <button type="button" on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} class:active={editor.isActive('heading', { level: 3 })} title="Heading 3"><Heading3 size={16} /></button>
       <div class="sep"></div>
-      <button type="button" on:click={() => editor.chain().focus().toggleBulletList().run()} class:active={editor.isActive('bulletList')} title="Bullet list">UL</button>
-      <button type="button" on:click={() => editor.chain().focus().toggleOrderedList().run()} class:active={editor.isActive('orderedList')} title="Numbered list">OL</button>
+      <button type="button" on:click={() => editor.chain().focus().toggleBulletList().run()} class:active={editor.isActive('bulletList')} title="Bullet list"><List size={16} /></button>
+      <button type="button" on:click={() => editor.chain().focus().toggleOrderedList().run()} class:active={editor.isActive('orderedList')} title="Numbered list"><ListOrdered size={16} /></button>
       <div class="sep"></div>
-      <button type="button" on:click={() => editor.chain().focus().toggleBlockquote().run()} class:active={editor.isActive('blockquote')} title="Blockquote">"</button>
-      <button type="button" on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')} title="Code block">&lt;/&gt;</button>
-      <button type="button" on:click={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule">&#8213;</button>
+      <button type="button" on:click={() => editor.chain().focus().toggleBlockquote().run()} class:active={editor.isActive('blockquote')} title="Blockquote"><Quote size={16} /></button>
+      <button type="button" on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')} title="Code block"><CodeIcon size={16} /></button>
+      <button type="button" on:click={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule"><Minus size={16} /></button>
       {#if editor.isActive('codeBlock')}
         <select
           title="Language"
@@ -88,8 +101,8 @@
         </select>
       {/if}
       <div class="sep"></div>
-      <button type="button" on:click={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Undo">&#8617;</button>
-      <button type="button" on:click={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Redo">&#8618;</button>
+      <button type="button" on:click={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Undo"><Undo2 size={16} /></button>
+      <button type="button" on:click={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="Redo"><Redo2 size={16} /></button>
     </div>
   {/if}
   <div class="content" bind:this={element}></div>
@@ -122,15 +135,17 @@
   }
 
   .toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 2rem;
-    padding: 0.25rem 0.375rem;
+    height: 2rem;
+    padding: 0.375rem;
     border: 1px solid transparent;
     border-radius: 0.25rem;
     background: none;
     cursor: pointer;
-    font-size: 0.8125rem;
     color: var(--color-text-muted);
-    line-height: 1.4;
   }
 
   .toolbar button:hover:not(:disabled) { background: var(--color-surface-hover); }
@@ -188,36 +203,38 @@
   :global(.ProseMirror ol) { padding-left: 1.5rem; margin-bottom: 1rem; list-style-type: decimal; }
   :global(.ProseMirror li) { margin-bottom: 0.25rem; }
   :global(.ProseMirror blockquote) {
-    background: var(--color-bg);
-    border-left: 4px solid #ce973e;
-    border-radius: 0.125rem;
+    background: rgba(55, 65, 81, 0.3);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0.375rem;
     padding: 1rem;
     margin-bottom: 1rem;
   }
   :global(.ProseMirror code) {
-    background: var(--color-surface);
-    color: #f5c2e7;
+    background: rgba(55, 65, 81, 0.4);
+    color: #f472b6;
     padding: 0.25rem;
     border-radius: 0.375rem;
-    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
-    font-size: 0.875em;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
+    font-size: 0.8125em;
     font-weight: 400;
   }
   :global(.ProseMirror code::before),
   :global(.ProseMirror code::after) { content: none; }
   :global(.ProseMirror pre) {
-    background: var(--color-bg);
+    background: rgba(30, 41, 59, 0.7);
+    box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.1);
     color: var(--color-text);
     padding: 1.25rem;
     border-radius: 0.75rem;
     margin-bottom: 1rem;
     overflow-x: auto;
-    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
     font-size: 0.9rem;
     line-height: 1.7;
+    tab-size: 4;
   }
   :global(.ProseMirror pre code) { background: none; padding: 0; color: inherit; font-size: inherit; }
-  :global(.ProseMirror a) { color: #89b4fa; text-decoration: underline; cursor: pointer; }
+  :global(.ProseMirror a) { color: #93c5fd; text-decoration: underline; cursor: pointer; }
   :global(.ProseMirror a:hover) { text-decoration: none; }
   :global(.ProseMirror strong) { font-weight: 700; }
   :global(.ProseMirror hr) { border: none; border-top: 1px solid var(--color-border); margin: 1rem 0; }
@@ -228,16 +245,4 @@
     float: left;
     height: 0;
   }
-
-  /* ── Syntax highlighting — Catppuccin Mocha ── */
-  :global(.hljs-comment), :global(.hljs-quote) { color: #6c7086; font-style: italic; }
-  :global(.hljs-keyword), :global(.hljs-selector-tag), :global(.hljs-type) { color: #cba6f7; }
-  :global(.hljs-string), :global(.hljs-attr) { color: #a6e3a1; }
-  :global(.hljs-number), :global(.hljs-literal) { color: #fab387; }
-  :global(.hljs-title), :global(.hljs-name) { color: #89b4fa; }
-  :global(.hljs-built_in) { color: #89dceb; }
-  :global(.hljs-meta) { color: #f38ba8; }
-  :global(.hljs-operator) { color: #89dceb; }
-  :global(.hljs-punctuation) { color: #9399b2; }
-  :global(.hljs-variable), :global(.hljs-params) { color: #cdd6f4; }
 </style>

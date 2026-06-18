@@ -1,27 +1,32 @@
 :root {
   color-scheme: dark;
 
-  --color-bg: #1e1e2e;
-  --color-surface: #313244;
-  --color-surface-hover: #45475a;
-  --color-border: #585b70;
+  /* theodinproject dark mode: gray-900/800/700 surfaces */
+  --color-bg: #111827;
+  --color-surface: #1f2937;
+  --color-surface-hover: #374151;
+  --color-border: #374151;
 
-  --color-text: #cdd6f4;
-  --color-text-muted: #bac2de;
-  --color-text-dim: #a6adc8;
-  --color-text-faint: #6c7086;
+  /* theodinproject dark mode: gray-200/300/400/500 text */
+  --color-text: #e5e7eb;
+  --color-text-muted: #d1d5db;
+  --color-text-dim: #9ca3af;
+  --color-text-faint: #6b7280;
 
-  --color-accent: #cba6f7;
-  --color-accent-hover: #b4befe;
-  --color-accent-text: #1e1e2e;
-  --color-accent-soft: rgba(203, 166, 247, 0.16);
-  --color-accent-shadow: rgba(203, 166, 247, 0.18);
+  /* theodinproject dark mode: button--primary is teal-700/800 */
+  --color-accent: #0f766e;
+  --color-accent-hover: #115e59;
+  --color-accent-text: #ffffff;
+  --color-accent-soft: rgba(15, 118, 110, 0.16);
+  --color-accent-shadow: rgba(15, 118, 110, 0.18);
 
-  --color-danger: #f38ba8;
-  --color-danger-border: #eba0ac;
-  --color-danger-soft: rgba(243, 139, 168, 0.14);
+  /* red-400 for text (better contrast on surface bg), red-500 for borders */
+  --color-danger: #f87171;
+  --color-danger-border: #ef4444;
+  --color-danger-soft: rgba(239, 68, 68, 0.14);
 
-  --color-success: #a6e3a1;
+  /* theodinproject dark mode: green-400 */
+  --color-success: #4ade80;
 }
 
 *, *::before, *::after {

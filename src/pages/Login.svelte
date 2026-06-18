@@ -90,10 +90,10 @@
     padding: 0.625rem 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: 0.375rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-text);
     background: var(--color-bg);
-    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }

@@ -59,10 +59,10 @@
   }
 
   .message {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-danger);
     margin-bottom: 1rem;
-    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
     background: var(--color-danger-soft);
     padding: 0.625rem 0.75rem;
     border-radius: 0.375rem;

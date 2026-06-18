@@ -2,6 +2,7 @@
   import { navigate } from '../stores/router.js';
   import { dbCreateNote, handleError } from '../lib/db.js';
   import { toasts } from '../stores/toasts.js';
+  import { ArrowLeft } from 'lucide-svelte';
   import Editor from '../components/Editor.svelte';
 
   let title = '';
@@ -29,7 +30,7 @@
 
 <div class="page">
   <div class="top-bar">
-    <button class="btn-back" on:click={() => navigate('list')}>&#8592; Back</button>
+    <button class="btn-back" on:click={() => navigate('list')}><ArrowLeft size={16} /> Back</button>
     <h1>New Note</h1>
   </div>
 
@@ -65,7 +66,7 @@
 
 <style>
   .page {
-    max-width: 1280px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
   }
@@ -84,6 +85,9 @@
   }
 
   .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
     background: none;
     border: none;
     color: var(--color-text-dim);

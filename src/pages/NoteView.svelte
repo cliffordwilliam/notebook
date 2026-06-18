@@ -3,6 +3,7 @@
   import { navigate } from '../stores/router.js';
   import { dbGetNote, dbDeleteNote, handleError } from '../lib/db.js';
   import { toasts } from '../stores/toasts.js';
+  import { ArrowLeft } from 'lucide-svelte';
   import Prism from 'prismjs';
   import 'prismjs/components/prism-clike';
   import 'prismjs/components/prism-c';
@@ -153,7 +154,7 @@
     </div>
   {:else if note}
     <div class="top-bar">
-      <button class="btn-back" on:click={() => navigate('list')}>&#8592; Back</button>
+      <button class="btn-back" on:click={() => navigate('list')}><ArrowLeft size={16} /> Back</button>
       <div class="actions">
         <button class="btn-edit" on:click={() => navigate('edit', { id })}>Edit</button>
         <button class="btn-danger" on:click={handleDelete}>Delete</button>
@@ -247,7 +248,7 @@
   .toc-list :global(.toc-item.active) {
     color: var(--color-text);
     background: var(--color-surface-hover);
-    border-left-color: #a9792b;
+    border-left-color: var(--color-accent);
   }
 
   .skeleton-view { margin-top: 1rem; }
@@ -265,6 +266,9 @@
   }
 
   .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
     background: none;
     border: none;
     color: var(--color-text-dim);
@@ -311,6 +315,7 @@
     font-weight: 700;
     color: var(--color-text);
     line-height: 1.25;
+    letter-spacing: -0.02em;
     margin-bottom: 0.5rem;
   }
 
@@ -329,7 +334,7 @@
   .content :global(p:first-child) { margin-top: 0; }
   .content :global(p:last-child) { margin-bottom: 0; }
 
-  .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; margin-top: 0; margin-bottom: 0.8888em; color: var(--color-text); }
+  .content :global(h1) { font-size: 2.25em; font-weight: 800; line-height: 1.1111; letter-spacing: -0.02em; margin-top: 0; margin-bottom: 0.8888em; color: var(--color-text); }
   .content :global(h2) { font-size: 1.5em;  font-weight: 700; line-height: 1.3333; margin-top: 2em;  margin-bottom: 1em;    color: var(--color-text); }
   .content :global(h3) { font-size: 1.25em; font-weight: 600; line-height: 1.6;    margin-top: 1.6em; margin-bottom: 0.6666667em; color: var(--color-text); }
 
@@ -340,8 +345,7 @@
 
   .content :global(strong) { font-weight: 600; color: var(--color-text); }
 
-  .content :global(a) { color: #89b4fa; text-decoration: underline; }
-  .content :global(a:visited) { color: var(--color-accent); }
+  .content :global(a) { color: #93c5fd; text-decoration: underline; }
   .content :global(a:hover) { text-decoration: none; }
 
   .content :global(ul) { list-style-type: disc;    margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
@@ -351,9 +355,9 @@
   .content :global(ol > li::marker) { color: var(--color-text-dim); }
 
   .content :global(blockquote) {
-    background: var(--color-bg);
-    border-left: 4px solid #ce973e;
-    border-radius: 0.125rem;
+    background: rgba(55, 65, 81, 0.3);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0.375rem;
     padding: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -363,29 +367,30 @@
 
   .content :global(hr) { border: none; border-top: 1px solid var(--color-border); margin-top: 3em; margin-bottom: 3em; }
 
-  /* Inline code — odin: pink-700, gray-100 bg, normal weight, rounded-md, no backtick pseudo-content */
+  /* Inline code — odin: pink-400, gray-700/40 bg, normal weight, rounded-md, no backtick pseudo-content */
   .content :global(code) {
-    color: #f5c2e7;
-    font-size: 0.875em;
+    color: #f472b6;
+    font-size: 0.8125em;
     font-weight: 400;
-    background: var(--color-surface);
-    padding: 0.2em 0.4em;
+    background: rgba(55, 65, 81, 0.4);
+    padding: 0.25rem;
     border-radius: 0.375rem;
-    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
   }
   .content :global(code::before),
   .content :global(code::after) { content: none; }
 
-  /* Code block — overrides inline code styles above */
+  /* Code block — odin: slate-800/70 bg, slate-300/10 ring, overrides inline code styles above */
   .content :global(pre) {
-    background: var(--color-bg);
+    background: rgba(30, 41, 59, 0.7);
+    box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.1);
     color: var(--color-text);
     padding: 1.25rem;
     border-radius: 0.75rem;
     margin-bottom: 1rem;
     overflow-x: auto;
-    font-family: Consolas, Monaco, 'Ubuntu Mono', monospace;
-    font-size: 1rem;
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
     line-height: 1.7;
     tab-size: 4;
   }
@@ -430,7 +435,7 @@
   .content :global(.line-numbers-rows > span) {
     display: block;
     counter-increment: linenumber;
-    line-height: 1.7rem;
+    line-height: 1.53rem;
   }
   .content :global(.line-numbers-rows > span::before) {
     content: counter(linenumber);
