@@ -33,6 +33,7 @@
     { value: 'kotlin',     label: 'Kotlin / KTS' },
     { value: 'xml',        label: 'XML' },
     { value: 'cmake',      label: 'CMake' },
+    { value: 'mermaid',    label: 'Mermaid Diagram' },
   ];
 
   export let content = '';

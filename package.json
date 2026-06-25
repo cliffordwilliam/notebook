@@ -20,6 +20,7 @@
     "@tiptap/extension-placeholder": "^2.0.0",
     "@tiptap/starter-kit": "^2.0.0",
     "lucide-svelte": "^1.0.1",
+    "mermaid": "^11.15.0",
     "prismjs": "^1.30.0"
   }
 }

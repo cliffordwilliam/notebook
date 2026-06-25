@@ -44,6 +44,7 @@ notebook
 - Bold, headings (H2–H3), bullet and numbered lists, blockquotes, code blocks
 - Language selector dropdown in the toolbar when a code block is active (C, C++, JavaScript, TypeScript, Python, Bash, CSS, HTML, JSON, SQL)
 - Syntax highlighting in the note view (Prism.js, odin theme) with line numbers and a copy button on every code block
+- Mermaid diagrams — write Mermaid syntax into a code block with the "Mermaid Diagram" language selected; it renders as a diagram in the note view. No live preview while editing; invalid syntax shows an inline error in the note view instead of the diagram
 - Sticky toolbar — stays visible when writing long notes
 - Table of contents in the note view — built from H2 headings, active heading tracks scroll position
 - Toast notifications on create, save, and delete; error toasts for unexpected failures

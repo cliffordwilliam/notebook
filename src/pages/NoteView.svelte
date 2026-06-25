@@ -60,6 +60,29 @@
     items.forEach((item, i) => item.classList.toggle('active', i === lastSeenIndex));
   }
 
+  async function renderMermaidBlocks(containerEl) {
+    const blocks = Array.from(containerEl.querySelectorAll('pre code.language-mermaid'));
+    if (!blocks.length) return;
+
+    const mermaid = (await import('mermaid')).default;
+    mermaid.initialize({ startOnLoad: false, theme: 'dark', suppressErrorRendering: true });
+
+    await Promise.all(blocks.map(async (code, i) => {
+      const pre = code.closest('pre');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mermaid-diagram';
+      try {
+        const { svg, bindFunctions } = await mermaid.render(`mermaid-diagram-${i}`, code.textContent);
+        wrapper.innerHTML = svg;
+        bindFunctions?.(wrapper);
+      } catch (e) {
+        wrapper.classList.add('mermaid-error');
+        wrapper.textContent = `Couldn't render diagram: ${e?.message ?? e}`;
+      }
+      pre.replaceWith(wrapper);
+    }));
+  }
+
   function enhanceCodeBlocks(containerEl) {
     containerEl.querySelectorAll('pre').forEach(pre => {
       const code = pre.querySelector('code');
@@ -105,6 +128,7 @@
     }
     if (!note) return;
     await tick();
+    await renderMermaidBlocks(contentEl);
     contentEl.querySelectorAll('pre code:not([class*="language-"])').forEach(code => {
       code.classList.add('language-cpp');
     });
@@ -395,6 +419,28 @@
     tab-size: 4;
   }
   .content :global(pre code) { background: none; padding: 0; padding-top: 3px; color: inherit; font-size: inherit; font-weight: inherit; }
+
+  /* ── Mermaid diagrams ── */
+  .content :global(.mermaid-diagram) {
+    display: flex;
+    justify-content: center;
+    background: rgba(30, 41, 59, 0.7);
+    box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+  }
+  .content :global(.mermaid-diagram svg) { max-width: 100%; }
+  .content :global(.mermaid-diagram.mermaid-error) {
+    display: block;
+    color: var(--color-danger);
+    background: var(--color-danger-soft);
+    box-shadow: 0 0 0 1px var(--color-danger-border);
+    font-family: 'JetBrains Mono', Consolas, Monaco, 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+  }
 
   /* ── Copy button ── */
   .content :global(.code-toolbar) { position: relative; margin-bottom: 1rem; }
